@@ -16,6 +16,15 @@ These tools are made with Python and are designed to be used in Bash or Python.
 
 All examples in this README assume you are in the root directory of this project when running commands.
 
+## Table of Contents
+
+- [Setup](#setup)
+- [How to Set Environment Variables in Bash](#how-to-set-environment-variables-in-bash)
+- [Setting Parameters](#setting-parameters)
+- [How to Use This Library](#how-to-use-this-library)
+- [Project Structure](#project-structure)
+- [Converting Results to Human-Readable Output](#converting-results-to-human-readable-output)
+- [Usage Guide](#usage-guide)
 
 ## Setup
 
@@ -30,7 +39,7 @@ Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token .
 **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 
-## Setting environment variables in Bash
+## How to Set Environment Variables in Bash
 
 If you already know about Bash environment variables, you can safely skip this section. If you don't, you should read this section to avoid leaking your DNS token in your bash history.
 
@@ -88,7 +97,7 @@ If using Python, any arguments used when calling a function will override the va
 Again: **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 
-## Using these tools
+## How to Use This Library
 
 ### In a Bash prompt
 
@@ -116,7 +125,7 @@ print(your_zone_id)
 ```
 
 
-## Structure
+## Project Structure
 
 These tools are namespaced by feature into folders/modules:
   - zones
@@ -132,7 +141,7 @@ Each feature/module can perform the following actions:
 e.g. Running `./zones/zone_list.py` in Bash will list all available DNS zones. (Make sure to pass your `HETZNER_DNS_TOKEN` as an environment variable)
 
 
-## Getting human-readable output (pretty-printing)
+## Converting Results to Human-Readable Output
 
 The default output is nearly impossible for humans to read. Here's how to format it so it looks better:
 
