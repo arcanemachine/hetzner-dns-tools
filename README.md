@@ -310,8 +310,8 @@ To delete a zone by using the zone's ID:
 ```
 from zones.zone_delete import zone_delete
 
-result = zone_delete(hetzner_dns_token='your-token',
-                     zone_id='your-zone-id')
+response = zone_delete(hetzner_dns_token='your-token',
+                       zone_id='your-zone-id')
 
 # print the response from the server
 print(response)  # 'OK'
