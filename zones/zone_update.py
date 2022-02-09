@@ -58,7 +58,7 @@ def zone_update(hetzner_dns_token=None,
             raise ValueError(error_message)
 
     # if no zone_id exists and domain name is given, use it to obtain the zone
-    if not zone_id:
+    if not zone_id and new_name:
         from zone_list import zone_list
 
         if name is None:
