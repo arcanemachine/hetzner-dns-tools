@@ -23,7 +23,7 @@ All examples in this README assume you are in the root directory of this project
 
 - Navigate to the folder and run the command you want to use.
 
-Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables)
+Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
 
 **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
@@ -36,9 +36,7 @@ If you already know about Bash environment variables, you can safely skip this s
 
 #### For a single command
 
-To set an environment variable for a single command, just enter the key-value pair before the command you want to run.
-
-Example: `HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` **(WARNING: This command will be saved to your Bash history! Continue reading to learn how to avoid this)**
+To set an environment variable for a single command, just enter the key-value pair before the command you want to run. For example: `HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` **(WARNING: This command will be saved to your Bash history! Continue reading to learn how to avoid this)**
 
 To avoid saving the item to your bash history, begin the command with a space:
 
@@ -47,7 +45,9 @@ Example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` (Make 
 Please note that this method of setting environment variables is cumbersome and error-prone. Continue reading to learn better and easier ways of setting environment variables.
 
 
-#### For the current session
+#### Setting persistent environment variables
+
+##### For the current terminal session
 
 You can set environment variables in a shell script, and use `source` to load them into the current session:
 
@@ -62,7 +62,7 @@ Then, run the command `source my-env.sh` to load the environment variable into y
 Now, simply running the command `./zones/zone_list.py` will automatically pass the `HETZNER_DNS_TOKEN` (or any other environment variables) to the command.
 
 
-##### Recommended: Use `direnv` for easy use across multiple sessions
+##### **Recommended:** Use `direnv` for easy use across multiple sessions
 
 [Direnv](https://direnv.net/) is a simple and effective program that automatically loads environment variables when you `cd` into a certain directory or any of its subdirectories.
 
@@ -90,11 +90,9 @@ Again: **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 ### In a Bash prompt
 
-Simply execute the file you want to run:
+Simply execute the file you want to run. For example: `./zones/zone_list.py` (Ensure that the `HETZNER_DNS_TOKEN` environment variable has been set. Read [this section](#setting-environment-variables) if you don't know how to do this.)
 
-Example: `./zones/zone_list.py`
-
-(Ensure that the `HETZNER_DNS_TOKEN` environment variable has been set. Read [this section](#setting-environment-variables) if you don't know how to do this.)
+To know whether a script executed successfully or not, run `echo $?` after running a command. If the value of `$?` is `0`, the script executed successfully. If the value of `$?` is `1`, the script did not 
 
 
 ### In Python
@@ -118,19 +116,18 @@ print(your_zone_id)
 
 ## Structure
 
-These tools are seperated by feature into folders/modules:
+These tools are namespaced by feature into folders/modules:
   - zones
   - records
 
-Each feature/module can perform the following actions
+Each feature/module can perform the following actions:
   - list
   - create
   - get
   - update
   - destroy
 
-e.g. Running `./zones/zone_list.py` in Bash will list all available DNS zones.
-
+e.g. Running `./zones/zone_list.py` in Bash will list all available DNS zones. (Make sure to pass your `HETZNER_DNS_TOKEN` as an environment variable)
 
 
 ## Getting human-readable output (pretty-printing)
