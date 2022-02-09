@@ -10,7 +10,7 @@ def zone_create(hetzner_dns_token=None, name=None):
         try:
             hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
         except KeyError:
-            print("Missing zone_id")
+            print("Missing hetzner_dns_token")
 
     if name is None:
         try:
