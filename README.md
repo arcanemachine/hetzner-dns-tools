@@ -310,21 +310,21 @@ print(zone_id)
 
 **NOTE: This function does not work, but always returns an error: 'zone name change not allowed'. I am not sure why. Deleting and creating records works fine. I'm just leaving this here for the intrepid explorer who wants to fix this.**
 
-~~Update an existing zone.
+~~Update an existing zone.~~
 
 ##### In a Bash prompt
 
-To update a zone's name by using the zone's ID: `ZONE_ID='your-zone-id' NAME='your-new-domain.com' ./zones/zone_update.py`
+~~To update a zone's name by using the zone's ID: `ZONE_ID='your-zone-id' NAME='your-new-domain.com' ./zones/zone_update.py`~~
 
-To update a zone's TTL by using the zone's ID: `ZONE_ID='your-zone-id' TTL=57600 ./zones/zone_update.py`
+~~To update a zone's TTL by using the zone's ID: `ZONE_ID='your-zone-id' TTL=57600 ./zones/zone_update.py`~~
 
-To update a zone's name by using the zone's domain name: `NAME='your-domain.com' NEW_NAME='your-new-domain.com ./zones/zone_update.py`
+~~To update a zone's name by using the zone's domain name: `NAME='your-domain.com' NEW_NAME='your-new-domain.com ./zones/zone_update.py`~~
 
-To update a zone's TTL by using the zone's domain name: `NAME='your-domain.com' TTL=57600 ./zones/zone_update.py`
+~~To update a zone's TTL by using the zone's domain name: `NAME='your-domain.com' TTL=57600 ./zones/zone_update.py`~~
 
 #### In Python
 
-To update a zone's name by using the zone's ID:
+~~To update a zone's name by using the zone's ID:~~
 
 ```
 from zones.zone_update import zone_update
@@ -339,7 +339,7 @@ print(zone['zone']['name'])  # 'your-new-domain.com'
 ```
 
 
-To update a zone's TTL by using the zone's ID:
+~~To update a zone's TTL by using the zone's ID:~~
 
 ```
 from zones.zone_update import zone_update
@@ -354,7 +354,7 @@ print(zone['zone']['ttl'])  # 57600
 ```
 
 
-To update a zone's name by using the zone's domain name:
+~~To update a zone's name by using the zone's domain name:~~
 
 ```
 from zones.zone_update import zone_update
@@ -368,7 +368,7 @@ print(zone['zone']['name'])  # 'your-new-domain.com'
 
 ```
 
-To update a zone's TTL by using the zone's domain name:
+~~To update a zone's TTL by using the zone's domain name:~~
 
 ```
 from zones.zone_update import zone_update
@@ -381,7 +381,6 @@ zone = zone_update(hetzner_dns_token='your-token',
 print(zone['zone']['ttl'])  # 57600
 
 ```
-~~
 
 #### zone_delete
 
