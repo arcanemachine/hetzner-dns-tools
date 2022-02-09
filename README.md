@@ -1,5 +1,7 @@
 # hetzner-dns-cli
 
+## **Missing features: zones/zone_update.py; Records have not been implemented yet!**
+
 #### *This repo was built using code samples from Hetzner's DNS API docs.*
 
 This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzner.com/api-docs/).
@@ -124,7 +126,7 @@ Each feature/module can perform the following actions:
   - list
   - create
   - get
-  - update
+  - update (coming soon!)
   - destroy
 
 e.g. Running `./zones/zone_list.py` in Bash will list all available DNS zones. (Make sure to pass your `HETZNER_DNS_TOKEN` as an environment variable)
