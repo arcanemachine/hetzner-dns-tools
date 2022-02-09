@@ -1,5 +1,7 @@
 # hetzner-dns-cli
 
+## **DO NOT USE THIS LIBRARY FOR A FEW DAYS. IT IS A WORK IN PROGRESS. THINGS MAY BREAK!**
+
 ## **Missing features: Records have not been implemented yet**
 
 #### *This repo was built using code samples from Hetzner's DNS API docs.*
