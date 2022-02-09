@@ -7,6 +7,7 @@ import requests
 
 
 def zone_create(hetzner_dns_token=None, name=None, id_only=False):
+    """Create a new zone."""
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']

@@ -7,6 +7,7 @@ import requests
 
 
 def zone_list(hetzner_dns_token=None):
+    """Get list of all zones."""
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']

@@ -7,6 +7,7 @@ import sys
 
 
 def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
+    """Get info about an existing zone."""
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
