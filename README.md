@@ -25,6 +25,7 @@ All examples in this README assume you are in the root directory of this project
 - [Project Structure](#project-structure)
 - [Converting Results to Human-Readable Output](#converting-results-to-human-readable-output)
 - [Usage Guide](#usage-guide)
+- [Using in Python Modules](#using-in-python-modules)
 
 ## Setup
 
@@ -434,17 +435,18 @@ print(response)  # 'OK'
 ```
 
 
-## Modules
+## Using in Python Modules
+
+**Note: You must navigate to the root folder of this project to use it as described in this README. I am new to Python packaging and am still figuring out the relative/absolute import thing.**
 
 These tools can be imported as python modules, whose primary functions have the same name as the file. For example, this function...:
 
 ```
 from zones.zone_list import zone_list
 
-zone_list()
+zones = zone_list()
 ```
 
 ...will return a dictionary containing the expected values.
-
 
 
