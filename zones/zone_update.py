@@ -10,35 +10,42 @@ def zone_update(hetzner_dns_token=None,
                 zone_id=None,
                 name=None,
                 new_name=None,
-                ttl=86400):
+                ttl=None):
     """
-    Update an existing zone.
 
-    - If doing a lookup by zone_id, use the name parameter to update the name.
-    - If doing a lookup by name, use the new_name parameter to update the name.
+    *THIS FUNCTION DOES NOT WORK! USE CREATE/DELETE FUNCTIONS INSTEAD!*
+
+    Update an existing zone. Updateable values are 'name' and 'ttl'.
+
+    * hetzner_dns_token *MUST* be passed in args or as environment
+      variable (HETZNER_DNS_TOKEN). You can get a DNS API token
+      here: https://dns.hetzner.com/settings/api-token
+
+    * zone_id *OR* new_name args/environment variables (ZONE_ID/NEW_NAME)
+      *MUST* be passed, but *NOT BOTH*.
+
+    - If 'new_name' passed in args or as environment variable (NEW_NAME),
+      then use 'name' to acquire the desired zone. (It's the domain name.)
+
+    - If doing a lookup by 'zone_id', use 'name' to update the name.
+
+    - If doing a lookup by 'name', use 'new_name' to update the name.
+
+    * 'name' and/or 'ttl' *MUST* be passed if using 'zone_id'.
+
+    * 'new_name' *MUST* be passed if using 'name'.
+
+    * 'zone_id' and 'name' *CANNOT* be used together.
+
     """
-    if hetzner_dns_token is None:
-        # get token from environment variable
-        hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
+    # BEGIN validation #
 
-    if name is None:
-        # get token from environment variable
-        name = os.environ['NAME']
-
-    if new_name is None:
-        # get token from environment variable
-        new_name = os.environ.get('NEW_NAME')
-
-    if os.environ.get('TTL'):
-        # get ttl from environment variable
-        ttl = int(os.environ['TTL'])
-
-    # return error/exception if not enough parameters passed
-    if zone_id is None and 'ZONE_ID' not in os.environ\
-            and new_name is None and 'NEW_NAME' not in os.environ\
-            and ttl is None and 'TTL' not in os.environ:
+    # must use name and/or ttl if using zone_id
+    if (zone_id is None and 'ZONE_ID' not in os.environ)\
+            and ((name is None and 'NAME' not in os.environ)
+                 or (ttl is None and 'TTL' not in os.environ)):
         error_message =\
-            "Not enough parameters. Needs one of: zone_id, new_name, ttl"
+            "Must use name and/or ttl with zone_id"
 
         if __name__ == '__main__':
             print(f"Error: {error_message}")
@@ -46,16 +53,49 @@ def zone_update(hetzner_dns_token=None,
 
         raise ValueError(error_message)
 
-    # return error/exception if using zone_id and new_name together
-    if zone_id or 'ZONE_ID' in os.environ:
-        if new_name or 'NEW_NAME' in os.environ:
-            error_message = "Cannot use zone_id and new_name together."
+    # must use name if using new_name
+    if new_name is not None or 'NEW_NAME' in os.environ:
+        if name is None and 'NAME' not in os.environ:
+            error_message =\
+                "Must use name if using new_name"
 
             if __name__ == '__main__':
                 print(f"Error: {error_message}")
                 sys.exit(1)  # exit with error
 
             raise ValueError(error_message)
+
+    # cannot use zone_id and new_name together
+    if (zone_id or 'ZONE_ID' in os.environ)\
+            and (new_name or 'NEW_NAME' in os.environ):
+        error_message = "Cannot use zone_id and new_name together."
+
+        if __name__ == '__main__':
+            print(f"Error: {error_message}")
+            sys.exit(1)  # exit with error
+
+        raise ValueError(error_message)
+    # END validation #
+
+    if hetzner_dns_token is None:
+        # get token from environment variable
+        hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
+
+    if name is None:
+        # get name from environment variable
+        name = os.environ.get('NAME')
+
+    if new_name is None:
+        # get new_name from environment variable
+        new_name = os.environ.get('NEW_NAME')
+
+    if ttl is None:
+        if os.environ.get('TTL'):
+            # get TTL from environment variable
+            ttl = int(os.environ['TTL'])
+        else:
+            # use default value for TTL
+            ttl = 86400
 
     # if no zone_id exists and domain name is given, use it to obtain the zone
     if not zone_id and new_name:

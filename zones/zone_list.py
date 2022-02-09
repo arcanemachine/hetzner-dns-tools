@@ -7,13 +7,20 @@ import requests
 
 
 def zone_list(hetzner_dns_token=None):
-    """Get list of all zones."""
+    """
+    Get list of all zones.
+
+    * hetzner_dns_token *MUST* be passed in args or as environment
+      variable (HETZNER_DNS_TOKEN). You can get a DNS API token
+      here: https://dns.hetzner.com/settings/api-token
+    """
+
+    # get token from environment variable
     if hetzner_dns_token is None:
-        # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
+    # get response
     try:
-        # get response
         response = requests.get(url="https://dns.hetzner.com/api/v1/zones",
                                 headers={"Auth-API-Token": hetzner_dns_token})
 
@@ -42,8 +49,8 @@ def zone_list(hetzner_dns_token=None):
         return response_dict
 
     except requests.exceptions.RequestException as e:
+        # when running via the terminal, print output to console then exit
         if __name__ == '__main__':
-            # when running via the terminal, print output to console
             print(f"Error: {e}")
             sys.exit(1)  # exit with error
         else:

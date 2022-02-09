@@ -7,7 +7,20 @@ import requests
 
 
 def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
-    """Create a new zone."""
+    """
+    Create a new zone.
+
+    * hetzner_dns_token *MUST* be passed in args or as environment
+      variable (HETZNER_DNS_TOKEN). You can get a DNS API token
+      here: https://dns.hetzner.com/settings/api-token
+
+    * name *MUST* passed in args or as environment variable (NAME).
+      It is used to set the [domain] name of the new zone.
+
+    - If 'id_only' passed in args or as environment variable (ID_ONLY),
+      return just the zone ID after creating the new zone.
+
+    """
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
