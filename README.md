@@ -4,28 +4,33 @@
 
 This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzner.com/api-docs/).
 
+**This library is pretty basic for now. It does not currently do bulk operations, and it does not work with query params. Pull requests and forks are welcomed! :)**
+
 These tools are made with Python and are designed to be used in Bash or Python.
+
+**In Bash, results will be returned as a condensed JSON-formatted string, except when string values (e.g. zone IDs) are requested, or when DELETE actions are performed (will return 'OK' if successful).**
+
+**In Python, results will be returned as a dictionary, except when string values (e.g. zone IDs) are requested, or when DELETE actions are performed (will return 'OK'  if successful.**
 
 All examples in this README assume you are in the root directory of this project when running commands.
 
+
 ## Setup
 
-Clone the repo to a folder of your choice: `git clone https://github.com/arcanemachine/hetzner-dns-cli`.
+- Ensure the `requests` Python library is installed: `pip install requests`
 
-Now, simply navigate to the folder and run the command you want to use.
+- Clone the repo to a folder of your choice: `git clone https://github.com/arcanemachine/hetzner-dns-cli`.
 
-Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py`
+- Navigate to the folder and run the command you want to use.
 
-(Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables)
+Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zones/zone_list.py` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables)
 
 **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 
 ## Setting environment variables in Bash
 
-If you already know about Bash environment variables, you can safely skip this section. If you don't, you should read this section to avoid leaking your DNS token in your bash history
-
-
+If you already know about Bash environment variables, you can safely skip this section. If you don't, you should read this section to avoid leaking your DNS token in your bash history.
 
 ### Setting environment variables
 
@@ -127,6 +132,7 @@ Each feature/module can perform the following actions
 e.g. Running `./zones/zone_list.py` in Bash will list all available DNS zones.
 
 
+
 ## Getting human-readable output (pretty-printing)
 
 The default output is nearly impossible for humans to read. Here's how to format it so it looks better:
@@ -139,7 +145,7 @@ This method requires you to have `npm` installed:
   - Pipe the output of a command to `json`:
     - `./zones/zone_list | json`
 
-If you know of a simpler method, please submit a ticket.
+If you know of a better method, please [submit a ticket](https://github.com/arcanemachine/hetzner-dns-cli/issues/new).
 
 
 ### In Python code
@@ -159,47 +165,170 @@ print(readable_dns_zones)
 ```
 
 
+## Usage Guide
 
-## Helpful Features
-
-This section highlights some features that have been included with this library.
+### Zones
 
 **This section assumes that you have saved the `HETZNER_DNS_TOKEN` environment variable before running the commands. Read [this section](#setting-environment-variables) if you don't know how to do this.)**
 
-### Get zone by domain name
+#### zone_list
 
-#### In a Bash prompt
+Get list of all zones.
 
-##### Get data for the entire zone
+##### In a Bash prompt
 
-`NAME=your-domain.com ./zones/zone_get.py`
+`./zones/zone_list.py`
 
-##### Get zone ID only
+#### In Python
 
-`NAME=your-domain.com ID_ONLY=1 ./zones/zone_get.py`
+```
+from zones.zone_list import zone_list
+
+your_zones = zone_list()
+
+print(your_zones)
+
+```
 
 
-### In Python
+#### zone_create
 
-##### Get data for the entire zone
+Create a new zone.
+
+##### In a Bash prompt
+
+To return all data for the zone: `NAME=your-domain.com ./zones/zone_create.py`
+
+To return just the zone ID: `NAME=your-domain.com ID_ONLY=1 ./zones/zone_create.py`
+
+#### In Python
+
+To get all data for the new zone:
+
+```
+from zones.zone_create import zone_create
+
+# create a new zone and return all zone data
+new_zone = zone_create(hetzner_dns_token='your-token',
+                       name='your-domain.com')
+
+# print the ID of the new zone
+print(new_zone['zone']['name'])
+
+```
+
+To return just the ID for the new zone:
+
+```
+from zones.zone_create import zone_create
+
+# create a new zone and return just the zone_id
+new_zone_id = zone_create(hetzner_dns_token='your-token',
+                          name='your-domain.com',
+                          id_only=True)
+
+# print the ID of the new zone
+print(new_zone_id)
+
+```
+
+
+#### zone_get
+
+Get info about an existing zone.
+
+##### In a Bash prompt
+
+To get all data for the zone by using the zone's ID: `ZONE_ID='your-zone-id' ./zones/zone_get.py`
+
+To get all data for the zone by using the zone's domain name: `NAME=your-domain.com ./zones/zone_get.py`
+
+To get just the zone's ID by using the zone's domain name: `ZONE_ID='your-zone-id' ID_ONLY=1 ./zones/zone_get.py`
+
+#### In Python
+
+To get all data for the zone by using the zone's ID:
 
 ```
 from zones.zone_get import zone_get
 
-zone = zone_get(name='your-domain.com')
+zone = zone_get(hetzner_dns_token='your-token',
+                zone_id='your-zone-id')
 
-print(zone)
+# print the name of the zone
+print(zone['zone']['name'])
 
 ```
 
-##### Get zone ID only
+
+To get all data for the zone by using the zone's domain name:
 
 ```
 from zones.zone_get import zone_get
 
-zone_id = zone_get(name='your-domain.com', id_only=True)
+zone = zone_get(hetzner_dns_token='your-token',
+                name='your-domain.com')
 
+# print the ID of the zone
+print(zone['zone']['id'])
+
+```
+
+
+To get just the zone's ID by using the zone's domain name:
+
+```
+from zones.zone_get import zone_get
+
+zone_id = zone_get(hetzner_dns_token='your-token',
+                   name='your-domain.com',
+                   id_only=True)
+
+# print the ID of the zone
 print(zone_id)
+
+```
+
+
+#### zone_delete
+
+Delete an existing zone.
+
+##### In a Bash prompt
+
+**All successful delete requests will return the value 'OK'**
+
+To delete a zone by using the zone's ID: `ZONE_ID='your-zone-id' ./zones/zone_delete.py`
+
+To delete a zone by using the zone's domain name: `NAME=your-domain.com ./zones/zone_delete.py`
+
+#### In Python
+
+**All successful delete requests will return the string 'OK'**
+
+To delete a zone by using the zone's ID:
+
+```
+from zones.zone_delete import zone_delete
+
+result = zone_delete(hetzner_dns_token='your-token',
+                     zone_id='your-zone-id')
+
+# print the response from the server
+print(response)  # 'OK'
+
+```
+
+To delete a zone by using the zone's domain name:
+
+```
+from zones.zone_get import zone_get
+
+response = zone_delete(hetzner_dns_token='your-token',
+                       name='your-domain.com')
+
+# print the response from the server
+print(response)  # 'OK'
 
 ```
 
