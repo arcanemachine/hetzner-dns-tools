@@ -200,6 +200,8 @@ To return all data for the zone: `NAME=your-domain.com ./zones/zone_create.py`
 
 To return just the zone ID: `NAME=your-domain.com ID_ONLY=1 ./zones/zone_create.py`
 
+To create a new zone with a custom TTL (default: 86400): `NAME=your-domain.com TTL=57600 ./zones/zone_create.py`
+
 #### In Python
 
 To get all data for the new zone:
@@ -228,6 +230,21 @@ new_zone_id = zone_create(hetzner_dns_token='your-token',
 
 # print the ID of the new zone
 print(new_zone_id)
+
+```
+
+To create a new zone with a custom TTL (default: 86400):
+
+```
+from zones.zone_create import zone_create
+
+# create a new zone and return all zone data
+new_zone = zone_create(hetzner_dns_token='your-token',
+                       name='your-domain.com',
+                       ttl=57600)
+
+# print the TTL of the new zone
+print(new_zone['zone']['ttl'])
 
 ```
 

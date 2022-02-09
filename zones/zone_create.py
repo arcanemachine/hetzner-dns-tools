@@ -6,7 +6,7 @@ import sys
 import requests
 
 
-def zone_create(hetzner_dns_token=None, name=None, id_only=False):
+def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
     """Create a new zone."""
     if hetzner_dns_token is None:
         # get token from environment variable
@@ -16,12 +16,16 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False):
         # get domain name from environment variable
         name = os.environ['NAME']
 
+    if os.environ.get('TTL'):
+        # get ttl from environment variable
+        ttl = int(os.environ['TTL'])
+
     try:
         response = requests.post(url="https://dns.hetzner.com/api/v1/zones",
                                  headers={"Content-Type": "application/json",
                                           "Auth-API-Token": hetzner_dns_token},
                                  data=json.dumps({"name": name,
-                                                  "ttl": 86400}))
+                                                  "ttl": ttl}))
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
