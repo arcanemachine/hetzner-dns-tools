@@ -97,7 +97,6 @@ Example: `./zones/zone_list.py`
 Either add this project's root folder to your Python PATH, or navigate to this project's root folder before running a script like this:
 
 ```
-#!/usr/bin/env python3
 from zones.zone_list import zone_list
 
 # THIS EXAMPLE WILL NOT WORK IF YOU HAVEN'T CREATED ANY HETZNER DNS ZONES
@@ -146,7 +145,6 @@ If you know of a simpler method, please submit a ticket.
 ### In Python code
 
 ```
-#!/usr/bin/env python3
 import json
 from zones.zone_list import zone_list
 
@@ -172,21 +170,38 @@ This section highlights some features that have been included with this library.
 
 #### In a Bash prompt
 
-##### Get data for the entire zone: `NAME=your-domain.com ./zones/zone_get.py`
+##### Get data for the entire zone
+
+`NAME=your-domain.com ./zones/zone_get.py`
+
+##### Get zone ID only
+
+`NAME=your-domain.com ID_ONLY=1 ./zones/zone_get.py`
+
 
 ### In Python
 
+##### Get data for the entire zone
+
 ```
-#!/usr/bin/env python3
 from zones.zone_get import zone_get
 
-your_zone = zone_get(name='your-domain.com')
+zone = zone_get(name='your-domain.com')
 
-print(your_zone)
+print(zone)
 
 ```
 
-**NOTE:** If no match is found, the program will raise a `ValueError` with the message: `zone not found`
+##### Get zone ID only
+
+```
+from zones.zone_get import zone_get
+
+zone_id = zone_get(name='your-domain.com', id_only=True)
+
+print(zone_id)
+
+```
 
 
 ## Modules
