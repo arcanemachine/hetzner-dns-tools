@@ -23,13 +23,8 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, name=None):
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
-    # cannot use zone_id and name together
-    if zone_id or 'ZONE_ID' in os.environ:
-        if name or 'NAME' in os.environ:
-            raise ValueError("Cannot use zone_id and name together.")
-
-    # if domain name is given, use it to obtain the zone
-    if name or 'NAME' in os.environ:
+    # if (domain) name exists, use it to obtain the zone
+    if (name or 'NAME' in os.environ):
         from zone_list import zone_list
 
         if name is None:

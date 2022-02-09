@@ -15,7 +15,7 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
       here: https://dns.hetzner.com/settings/api-token
 
     * name *MUST* passed in args or as environment variable (NAME).
-      It is used to set the [domain] name of the new zone.
+      It is used to set the (domain) name of the new zone.
 
     - If 'id_only' passed in args or as environment variable (ID_ONLY),
       return just the zone ID after creating the new zone.

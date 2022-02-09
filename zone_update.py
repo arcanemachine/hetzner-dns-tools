@@ -75,6 +75,7 @@ def zone_update(hetzner_dns_token=None,
             sys.exit(1)  # exit with error
 
         raise ValueError(error_message)
+
     # END validation #
 
     if hetzner_dns_token is None:
@@ -97,12 +98,10 @@ def zone_update(hetzner_dns_token=None,
             # use default value for TTL
             ttl = 86400
 
-    # if no zone_id exists and domain name is given, use it to obtain the zone
-    if not zone_id and new_name:
+    # if new_name is given (and no zone_id was passed), then use name to
+    # obtain the zone
+    if new_name and not zone_id:
         from zone_list import zone_list
-
-        if name is None:
-            name = os.environ['NAME']
 
         # get list of zones
         response_dict = zone_list()
