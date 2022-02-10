@@ -33,7 +33,7 @@ def record_create(hetzner_dns_token=None,
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
     if name is None:
-        # get domain name from environment variable
+        # get name from environment variable
         name = os.environ['NAME']
 
     if ttl is None:
@@ -41,7 +41,8 @@ def record_create(hetzner_dns_token=None,
             # get ttl from environment variable
             ttl = int(os.environ['TTL'])
         else:
-            ttl = 86400  # default
+            # use default value for TTL
+            ttl = 86400
 
     if record_type is None:
         # get record_type from environment variable

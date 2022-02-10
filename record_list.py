@@ -36,30 +36,27 @@ def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
 
     # if (domain) name exists, use it to obtain the zone
     if (zone_name or 'ZONE_NAME' in os.environ):
-        from zone_list import zone_list
+        from zone_get import zone_get
 
-        # get list of zones
-        response_dict = zone_list()
-
-        # check response for errors
-        helpers.check_response_for_errors(response_dict)
-
-        # check for matching zone
-        dns_zones = response_dict['zones']
-        for zone in dns_zones:
-            if zone['name'] == zone_name:
-                zone_id = zone['id']
-                break
-
-        # if no matching zone found, halt and notify of error
-        if zone_id is None:
-            error_message = "record not found"  # fixme: is this message right?
+        try:
+            # get the desired zone
+            response_dict = zone_get(zone_name=zone_name)
+        except ValueError:
+            # if no matching zone found, halt and notify of error
+            error_message = "record not found"
 
             if __name__ == '__main__':
                 print(f"Error: {error_message}")
                 sys.exit(1)  # exit with error
             else:
                 raise ValueError(error_message)
+
+        # check response for errors
+        helpers.check_response_for_errors(response_dict)
+
+        # get the zone_id
+        zone = response_dict['zone']
+        zone_id = zone['id']
 
     # get zone_id from environment variable
     if zone_id is None:

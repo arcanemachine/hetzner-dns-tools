@@ -33,9 +33,13 @@ def zone_get(
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
-    if zone_name is None:
+    if zone_name is None and os.environ.get('ZONE_NAME'):
         # get zone_name from environment variable
-        zone_name = os.environ.get('ZONE_NAME', None)
+        zone_name = os.environ['ZONE_NAME']
+
+    if id_only is None and os.environ.get('ID_ONLY'):
+        # get id_only from environment variable
+        id_only = os.environ['ID_ONLY']
 
     # if zone_name exists, use it to obtain the zone
     if zone_name or 'ZONE_NAME' in os.environ:
@@ -66,7 +70,7 @@ def zone_get(
                 raise ValueError(error_message)
 
         # return the expected zone ID or zone
-        if id_only or os.environ.get('ID_ONLY') == '1':
+        if id_only:
             # return the zone_id
             result = matching_zone['zone']['id']
 

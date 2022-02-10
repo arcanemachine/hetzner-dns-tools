@@ -17,9 +17,6 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
-
-    * zone_id *OR* name args/environment variables (ZONE_ID/NAME)
-      *MUST* be passed, but *NOT BOTH*.
     """
     if hetzner_dns_token is None:
         # get token from environment variable
