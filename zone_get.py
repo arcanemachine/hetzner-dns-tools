@@ -8,11 +8,13 @@ import sys
 import hetzner_dns_helpers as helpers
 
 
-def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
+def zone_get(
+        hetzner_dns_token=None, zone_id=None, zone_name=None, id_only=False):
     """
     Get info about an existing zone.
+    https://dns.hetzner.com/api-docs/#operation/GetZone
 
-    - Lookups can be performed using 'name' or 'zone_id'.
+    - Lookups can be performed using 'zone_name' or 'zone_id'.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
@@ -21,8 +23,8 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
     - If 'zone_id' passed in args or as environment variable (ZONE_ID),
       then use it to acquire the desired zone.
 
-    - If (domain) 'name' passed in args or as environment variable (NAME),
-      then use it to acquire the desired zone.
+    - If (domain) 'zone_name' passed in args or as environment variable
+      (NAME), then use it to acquire the desired zone.
 
     - If 'id_only' passed in args or as environment variable (ID_ONLY),
       return just the zone ID if one exists.
@@ -31,15 +33,13 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
-    # if (domain) name exists, use it to obtain the zone (but only if
-    # zone_id is falsy)
-    if (name or 'NAME' in os.environ)\
-            and (zone_id is None and 'ZONE_ID' not in os.environ):
-        from zone_list import zone_list
+    if zone_name is None:
+        # get zone_name from environment variable
+        zone_name = os.environ.get('ZONE_NAME', None)
 
-        # get name from environment variable
-        if name is None:
-            name = os.environ['NAME']
+    # if zone_name exists, use it to obtain the zone
+    if zone_name or 'ZONE_NAME' in os.environ:
+        from zone_list import zone_list
 
         # get list of zones
         response_dict = zone_list()
@@ -51,7 +51,7 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
         matching_zone = None
         dns_zones = response_dict['zones']
         for zone in dns_zones:
-            if zone['name'] == name:
+            if zone['name'] == zone_name:
                 matching_zone = {'zone': zone}
                 break
 
@@ -90,9 +90,9 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
     # get response
     try:
         response = requests.get(
-            url=f"https://dns.hetzner.com/api/v1/zones/{zone_id}",
-            headers={"Auth-API-Token": hetzner_dns_token,
-                     "Content-Type": "application/json; charset=utf-8"})
+            url=f'https://dns.hetzner.com/api/v1/zones/{zone_id}',
+            headers={'Auth-API-Token': hetzner_dns_token,
+                     'Content-Type': 'application/json; charset=utf-8'})
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
@@ -111,5 +111,5 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
         helpers.handle_request_exception(err)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     zone_get()

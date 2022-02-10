@@ -11,20 +11,21 @@ import hetzner_dns_helpers as helpers
 def zone_list(hetzner_dns_token=None):
     """
     Get list of all zones.
+    https://dns.hetzner.com/api-docs/#operation/GetZones
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
     """
 
-    # get token from environment variable
     if hetzner_dns_token is None:
+        # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
     # get response
     try:
-        response = requests.get(url="https://dns.hetzner.com/api/v1/zones",
-                                headers={"Auth-API-Token": hetzner_dns_token})
+        response = requests.get(url='https://dns.hetzner.com/api/v1/zones',
+                                headers={'Auth-API-Token': hetzner_dns_token})
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
@@ -43,5 +44,5 @@ def zone_list(hetzner_dns_token=None):
         helpers.handle_request_exception(err)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     zone_list()

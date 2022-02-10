@@ -14,10 +14,12 @@ def zone_update(hetzner_dns_token=None,
                 new_name=None,
                 ttl=None):
     """
-
+    *******************************************************************
     *THIS FUNCTION DOES NOT WORK! USE CREATE/DELETE FUNCTIONS INSTEAD!*
+    *******************************************************************
 
     Update an existing zone. Updateable values are 'name' and 'ttl'.
+    https://dns.hetzner.com/api-docs/#operation/UpdateZone
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
@@ -40,6 +42,16 @@ def zone_update(hetzner_dns_token=None,
     * 'zone_id' and 'name' *CANNOT* be used together.
 
     """
+
+    if True:
+        error_message = "This module doesn't work! Use create/delete instead!"
+
+        if __name__ == '__main__':
+            print(f"Error: {error_message}")
+            sys.exit(1)  # exit with error
+
+        raise ValueError(error_message)
+
     # BEGIN validation #
 
     # must use name and/or ttl if using zone_id
@@ -136,11 +148,11 @@ def zone_update(hetzner_dns_token=None,
     try:
         # get response
         response = requests.put(
-            url=f"https://dns.hetzner.com/api/v1/zones/{zone_id}",
-            headers={"Content-Type": "application/json",
-                     "Auth-API-Token": hetzner_dns_token},
-            data=json.dumps({"name": name,
-                             "ttl": ttl}))
+            url=f'https://dns.hetzner.com/api/v1/zones/{zone_id}',
+            headers={'Content-Type': 'application/json',
+                     'Auth-API-Token': hetzner_dns_token},
+            data=json.dumps({'name': name,
+                             'ttl': ttl}))
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
@@ -164,5 +176,5 @@ def zone_update(hetzner_dns_token=None,
             raise requests.exceptions.RequestException(e)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     zone_update()

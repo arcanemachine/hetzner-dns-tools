@@ -8,7 +8,9 @@
 
 This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzner.com/api-docs/), namely Zones and Records.
 
-**This library is pretty basic for now. It does not currently do bulk operations, and it does not work with query params. Pull requests and forks are welcomed! :)**
+To be specific, **hetzner-dns-cli** makes it easier to manage your zones/records by name instead of having to get the ID first (although you can do that as well). Also, it allows you to retrieve *only* the IDs if needed, without having to manually parse the JSON first.
+
+**hetzner-dns-cli is pretty basic for now. It does not currently do bulk operations, and it does not work with query params. Pull requests and forks are welcomed! :)**
 
 These tools are made with Python and are designed to be used in Bash or Python.
 
@@ -320,7 +322,7 @@ print(zone_id)
 
 #### zone_update
 
-**NOTE: This function does not work, but always returns an error: 'zone name change not allowed'. I am not sure why. Deleting and creating records works fine. I'm just leaving this here for the intrepid explorer who wants to fix this.**
+**NOTE: This function does not work, but always returns an error: 'zone name change not allowed'. I am not sure why. Deleting and creating zones works fine. I'm just leaving this here for the intrepid explorer who wants to fix this.**
 
 ~~Update an existing zone.~~
 

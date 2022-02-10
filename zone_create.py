@@ -8,9 +8,10 @@ import requests
 import hetzner_dns_helpers as helpers
 
 
-def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
+def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
     """
     Create a new zone.
+    https://dns.hetzner.com/api-docs/#operation/CreateZone
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
@@ -31,16 +32,20 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
         # get domain name from environment variable
         name = os.environ['NAME']
 
-    if os.environ.get('TTL'):
-        # get ttl from environment variable
-        ttl = int(os.environ['TTL'])
+    if ttl is None:
+        if os.environ.get('TTL'):
+            # get TTL from environment variable
+            ttl = int(os.environ['TTL'])
+        else:
+            # use default value for TTL
+            ttl = 86400
 
     try:
-        response = requests.post(url="https://dns.hetzner.com/api/v1/zones",
-                                 headers={"Content-Type": "application/json",
-                                          "Auth-API-Token": hetzner_dns_token},
-                                 data=json.dumps({"name": name,
-                                                  "ttl": ttl}))
+        response = requests.post(url='https://dns.hetzner.com/api/v1/zones',
+                                 headers={'Content-Type': 'application/json',
+                                          'Auth-API-Token': hetzner_dns_token},
+                                 data=json.dumps({'name': name,
+                                                  'ttl': ttl}))
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
@@ -72,5 +77,5 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
         helpers.handle_request_exception(err)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     zone_create()
