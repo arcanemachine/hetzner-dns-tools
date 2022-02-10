@@ -8,30 +8,35 @@ import requests
 import hetzner_dns_helpers as helpers
 
 
-def record_list(hetzner_dns_token=None, zone_id=None, name=None):
+def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
     """
     Get list of all records.
+    https://dns.hetzner.com/api-docs/#operation/GetRecords
 
-    - Lookups can be performed using 'name' or 'zone_id'.
+    - Lookups can be performed using 'zone_name' or 'zone_id'.
 
-    - If no 'name' or 'zone_id' is given, all records will be returned.
+    - If no 'zone_name' or 'zone_id' is given, all records will be returned.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
-
     """
 
-    # get token from environment variable
     if hetzner_dns_token is None:
+        # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
-    # if (domain) name exists, use it to obtain the zone
-    if (name or 'NAME' in os.environ):
-        from zone_list import zone_list
+    if zone_id is None and os.environ.get('ZONE_ID'):
+        # get zone_id from environment variable
+        zone_id = os.environ['ZONE_ID']
 
-        if name is None:
-            name = os.environ['NAME']
+    if zone_name is None and os.environ.get('ZONE_NAME'):
+        # get zone_name from environment variable
+        zone_name = os.environ['ZONE_NAME']
+
+    # if (domain) name exists, use it to obtain the zone
+    if (zone_name or 'ZONE_NAME' in os.environ):
+        from zone_list import zone_list
 
         # get list of zones
         response_dict = zone_list()
@@ -42,7 +47,7 @@ def record_list(hetzner_dns_token=None, zone_id=None, name=None):
         # check for matching zone
         dns_zones = response_dict['zones']
         for zone in dns_zones:
-            if zone['name'] == name:
+            if zone['name'] == zone_name:
                 zone_id = zone['id']
                 break
 
@@ -67,9 +72,9 @@ def record_list(hetzner_dns_token=None, zone_id=None, name=None):
             params['zone_id'] = zone_id
 
         # get response
-        response = requests.get(url="https://dns.hetzner.com/api/v1/records",
+        response = requests.get(url='https://dns.hetzner.com/api/v1/records',
                                 params=params,
-                                headers={"Auth-API-Token": hetzner_dns_token})
+                                headers={'Auth-API-Token': hetzner_dns_token})
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
@@ -88,5 +93,5 @@ def record_list(hetzner_dns_token=None, zone_id=None, name=None):
         helpers.handle_request_exception(err)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     record_list()
