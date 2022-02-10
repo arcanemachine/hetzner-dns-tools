@@ -17,6 +17,7 @@ def record_get(hetzner_dns_token=None,
                record_type=None,
                value=None,
                allow_multiple_records=False,
+               get_first_record=False,
                id_only=False):
     """
     Get info about an existing record.
@@ -28,7 +29,8 @@ def record_get(hetzner_dns_token=None,
 
     - If indirect lookups are performed, an exception will be raised if
       multiple records are returned, *UNLESS* you specify a truthy
-      value for the 'allow_multiple_records' parameter.
+      value for the 'allow_multiple_records' or the 'get_first_record'
+      parameters.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
@@ -66,10 +68,20 @@ def record_get(hetzner_dns_token=None,
         # get value from environment variable
         value = os.environ['VALUE']
 
-    if allow_multiple_records is None\
+    if not allow_multiple_records\
             and os.environ.get('ALLOW_MULTIPLE_RECORDS'):
-        # get allow_multiple from environment variable
+        # get allow_multiple_records from environment variable
         allow_multiple_records = os.environ['ALLOW_MULTIPLE_RECORDS']
+
+    if not get_first_record\
+            and os.environ.get('GET_FIRST_RECORD'):
+        # get get_first_record from environment variable
+        get_first_record = os.environ['GET_FIRST_RECORD']
+
+    if not id_only\
+            and os.environ.get('ID_ONLY'):
+        # get id_only from environment variable
+        id_only = os.environ['ID_ONLY']
 
     # if record_id exists, do a direct lookup to obtain the record
     if record_id:
@@ -103,7 +115,7 @@ def record_get(hetzner_dns_token=None,
 
         # if zone_name passed, lookup the zone that matches it to get zone_id
         if zone_name:
-            zone = zone_get(zone_name=zone_name)
+            zone = zone_get(zone_name=zone_name, id_only=False)
             if not zone_id:
                 zone_id = zone['zone']['id']
             elif zone_id != zone['zone']['id']:
@@ -119,36 +131,33 @@ def record_get(hetzner_dns_token=None,
         records = record_list(hetzner_dns_token=hetzner_dns_token,
                               zone_id=zone_id)['records']
 
-        # iterate over the given parameters, adding any matchine records that
+        # iterate over the given parameters, adding any matching records that
         # are not yet in the list
-        filtered_records = []
-        if zone_id:
-            for record in records:
-                if record['zone_id'] == zone_id\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if zone_name:
-            for record in records:
-                if record['zone_name'] == zone_name\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if name:
-            for record in records:
-                if record['name'] == name and record not in filtered_records:
-                    filtered_records.append(record)
-        if ttl:
-            for record in records:
-                if record['ttl'] == ttl and record not in filtered_records:
-                    filtered_records.append(record)
-        if record_type:
-            for record in records:
-                if record['type'] == record_type\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if value:
-            for record in records:
-                if record['value'] == value and record not in filtered_records:
-                    filtered_records.append(record)
+        if (zone_id or zone_name) and\
+                (not name and not ttl and not record_type and not value):
+            filtered_records = records
+        else:
+            filtered_records = []
+            if name:
+                for record in records:
+                    if record['name'] == name\
+                            and record not in filtered_records:
+                        filtered_records.append(record)
+            if ttl:
+                for record in records:
+                    if record['ttl'] == ttl\
+                            and record not in filtered_records:
+                        filtered_records.append(record)
+            if record_type:
+                for record in records:
+                    if record['type'] == record_type\
+                            and record not in filtered_records:
+                        filtered_records.append(record)
+            if value:
+                for record in records:
+                    if record['value'] == value\
+                            and record not in filtered_records:
+                        filtered_records.append(record)
 
         # if no records found, return empty dictionary
         if len(filtered_records) == 0:
@@ -160,28 +169,62 @@ def record_get(hetzner_dns_token=None,
 
         # if one record found, return it
         if len(filtered_records) == 1:
+            # if id_only, return just the record ID
+            if id_only:
+                if __name__ == '__main__':
+                    print(filtered_records[0]['id'])
+                    sys.exit(0)  # exit successfully
+                else:
+                    return filtered_records[0]
+
             # when running via the terminal, print output to console then exit
             if __name__ == '__main__':
-                print(filtered_records[0])
+                print(json.dumps(filtered_records[0]))
                 sys.exit(0)  # exit successfully
             return filtered_records[0]
 
-        # if multiple records found, raise an exception unless
-        # 'allow_multiple_records' is truthy
+        # handle multiple records
         if len(filtered_records) > 1:
-            if allow_multiple_records:
+            records_count = len(filtered_records)
+            plural = "s" if records_count != 1 else ""
+            if get_first_record:
+                # if id_only, return just the record ID
+                if id_only:
+                    if __name__ == '__main__':
+                        print(filtered_records[0]['id'])
+                        sys.exit(0)  # exit successfully
+                    else:
+                        return filtered_records[0]
+
                 # when running via the terminal, print output to console,
                 # then exit
                 if __name__ == '__main__':
-                    print(filtered_records)
+                    print(json.dumps(filtered_records[0]))
+                    sys.exit(0)  # exit successfully
+                return filtered_records[0]
+            elif id_only:
+                # if id_only exists, raise an exception multiple records
+                error_message = f"Found {records_count} record{plural}. "\
+                    "Cannot return IDs for more than one record."
+                if __name__ == '__main__':
+                    print(f"Error: {error_message}")
+                    sys.exit(1)  # exit with error
+                else:
+                    raise ValueError(error_message)
+            elif allow_multiple_records:
+                # when running via the terminal, print output to console,
+                # then exit
+                if __name__ == '__main__':
+                    print(json.dumps(filtered_records))
                     sys.exit(0)  # exit successfully
                 return filtered_records
             else:
                 error_message =\
-                    "Multiple requests returned. If you want to allow "\
-                    "multiple records, pass in the allow_multiple_records "\
-                    "parameter or set the ALLOW_MULTIPLE_RECORDS environment "\
-                    "variable."
+                    f"Found {records_count} record{plural}. Assign a truthy "\
+                    "value to 'allow_multiple_records' To get all relevant "\
+                    "records, or use 'get_first_record' to get only the "\
+                    "first record. Capitalize these values if using "\
+                    "environment variables."
                 if __name__ == '__main__':
                     print(f"Error: {error_message}")
                     sys.exit(1)  # exit with error
