@@ -5,6 +5,8 @@ import os
 import requests
 import sys
 
+import hetzner_dns_helpers as helpers
+
 
 def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
     """
@@ -42,19 +44,8 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
         # get list of zones
         response_dict = zone_list()
 
-        # check for errors
-        if response_dict.get('error') or response_dict.get('message'):
-            error_message = ""
-            if response_dict.get('error'):
-                error_message = response_dict['error']['message']
-            elif response_dict.get('message'):
-                error_message = response_dict['message']
-
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
+        # check response for errors
+        helpers.check_response_for_errors(response_dict)
 
         # check for matching zone
         matching_zone = None
@@ -106,19 +97,8 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
 
-        # check for errors
-        if response_dict.get('error') or response_dict.get('message'):
-            error_message = ""
-            if response_dict.get('error'):
-                error_message = response_dict['error']['message']
-            elif response_dict.get('message'):
-                error_message = response_dict['message']
-
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
+        # check response for errors
+        helpers.check_response_for_errors(response_dict)
 
         # when running via the terminal, print output to console then exit
         if __name__ == '__main__':
@@ -127,13 +107,8 @@ def zone_get(hetzner_dns_token=None, zone_id=None, name=None, id_only=False):
 
         return response_dict
 
-    except requests.exceptions.RequestException as e:
-        # when running via the terminal, print output to console then exit
-        if __name__ == '__main__':
-            print(f"Error: {e}")
-            sys.exit(1)  # exit with error
-        else:
-            raise requests.exceptions.RequestException(e)
+    except requests.exceptions.RequestException as err:
+        helpers.handle_request_exception(err)
 
 
 if __name__ == "__main__":

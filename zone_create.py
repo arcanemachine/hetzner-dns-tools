@@ -5,6 +5,8 @@ import os
 import sys
 import requests
 
+import hetzner_dns_helpers as helpers
+
 
 def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
     """
@@ -43,19 +45,8 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
 
-        # check for errors
-        if response_dict.get('error') or response_dict.get('message'):
-            error_message = ""
-            if response_dict.get('error'):
-                error_message = response_dict['error']['message']
-            elif response_dict.get('message'):
-                error_message = response_dict['message']
-
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
+        # check response for errors
+        helpers.check_response_for_errors(response_dict)
 
         # return the expected result
         if id_only or os.environ.get('ID_ONLY') == '1':
@@ -77,13 +68,8 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=86400):
 
         return response_dict
 
-    except requests.exceptions.RequestException as e:
-        if __name__ == '__main__':
-            # when running via the terminal, print error to console
-            print(f"Error: {e}")
-            sys.exit(1)  # exit with error
-        else:
-            raise requests.exceptions.RequestException(e)
+    except requests.exceptions.RequestException as err:
+        helpers.handle_request_exception(err)
 
 
 if __name__ == "__main__":
