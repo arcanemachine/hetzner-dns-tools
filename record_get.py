@@ -19,8 +19,9 @@ def record_get(hetzner_dns_token=None,
                ttl=None,
                record_type=None,
                value=None,
-               allow_multiple_records=False,
                get_first_record=False,
+               allow_multiple_records=False,
+               allow_multiple_zones=False,
                id_only=False):
     """
     Get info about an existing record.
@@ -119,22 +120,48 @@ def record_get(hetzner_dns_token=None,
         # get value from environment variable
         value = os.environ['VALUE']
 
-    if not allow_multiple_records\
-            and os.environ.get('ALLOW_MULTIPLE_RECORDS'):
-        # get allow_multiple_records from environment variable
-        allow_multiple_records = os.environ['ALLOW_MULTIPLE_RECORDS']
-
     if not get_first_record\
             and os.environ.get('GET_FIRST_RECORD'):
         # get get_first_record from environment variable
         get_first_record = os.environ['GET_FIRST_RECORD']
 
+    if not allow_multiple_records\
+            and os.environ.get('ALLOW_MULTIPLE_RECORDS'):
+        # get allow_multiple_records from environment variable
+        allow_multiple_records = os.environ['ALLOW_MULTIPLE_RECORDS']
+
+    if not allow_multiple_zones\
+            and os.environ.get('ALLOW_MULTIPLE_ZONES'):
+        # get allow_multiple_zones from environment variable
+        allow_multiple_zones = os.environ['ALLOW_MULTIPLE_ZONES']
+
+    # BEGIN validation #
+
+    # if no record_id exists, ensure that zone_name or zone_id exist,
+    # in order to prevent pulling records from multiple zones
+    if not record_id and not zone_name and not zone_id\
+            and not allow_multiple_zones:
+        error_message = "In order to prevent records from being pulled from "\
+            "more than one zone, you must specify one (or more) of: "\
+            "record_id, zone_id, or zone_name. You can override this "\
+            "behavior by assigning a truthy value to 'allow_multiple_zones'."
+        helpers.exit_with_error(error_message)
+
+    # ensure that one or more optional parameters exist before doing
+    # an indirect lookup
+    if not record_id\
+            and not name and not ttl and not record_type and not value:
+        error_message =\
+            "You must provide a record_id or one or more of the following: "\
+            "name, ttl, record_type (environment variable: TYPE), or value."
+        helpers.exit_with_error(error_message)
+
     # if zone_name passed, lookup the zone that matches it to get zone_id
     if zone_name:
-        zone = zone_get(zone_name=zone_name, id_only=False)
+        zone_name_id = zone_get(zone_name=zone_name, id_only=True)
         if not zone_id:
-            zone_id = zone['zone']['id']
-        elif zone_id != zone['zone']['id']:
+            zone_id = zone_name_id
+        elif zone_id != zone_name_id:
             error_message =\
                 "The zone_id you entered does not match the zone_id of "\
                 "the zone_name you entered."
@@ -143,6 +170,8 @@ def record_get(hetzner_dns_token=None,
                 sys.exit(1)  # exit with error
             else:
                 raise ValueError(error_message)
+
+    # END validation #
 
     records = record_list(hetzner_dns_token=hetzner_dns_token,
                           zone_id=zone_id)['records']
@@ -210,10 +239,9 @@ def record_get(hetzner_dns_token=None,
                     print(filtered_records[0]['id'])
                     sys.exit(0)  # exit successfully
                 else:
-                    return filtered_records[0]
+                    return filtered_records[0]['id']
 
-            # when running via the terminal, print output to console,
-            # then exit
+            # when running via the terminal, print output to console then exit
             if __name__ == '__main__':
                 print(json.dumps(filtered_records[0]))
                 sys.exit(0)  # exit successfully
