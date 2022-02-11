@@ -7,6 +7,8 @@ import sys
 
 import hetzner_dns_helpers as helpers
 
+from zone_list import zone_list
+
 
 def zone_get(
         hetzner_dns_token=None, zone_id=None, zone_name=None, id_only=False):
@@ -41,13 +43,14 @@ def zone_get(
         # get zone_name from environment variable
         zone_name = os.environ['ZONE_NAME']
 
-    if id_only is None and os.environ.get('ID_ONLY'):
+    if not id_only and os.environ.get('ID_ONLY'):
         # get id_only from environment variable
         id_only = os.environ['ID_ONLY']
 
+    zone = None
+
     # if zone_name exists, use it to obtain the zone
-    if zone_name or 'ZONE_NAME' in os.environ:
-        from zone_list import zone_list
+    if (zone_name or 'ZONE_NAME' in os.environ) and zone_id is None:
 
         # get list of zones
         response_dict = zone_list()
@@ -56,15 +59,15 @@ def zone_get(
         helpers.check_response_for_errors(response_dict)
 
         # check for matching zone
-        matching_zone = None
         dns_zones = response_dict['zones']
-        for zone in dns_zones:
-            if zone['name'] == zone_name:
-                matching_zone = {'zone': zone}
+        for dns_zone in dns_zones:
+            if dns_zone['name'] == zone_name:
+                zone = {'zone': dns_zone}
+                zone_id = zone['zone']['id']
                 break
 
         # if no matching zone found, halt and notify of error
-        if matching_zone is None:
+        if zone is None:
             error_message = "zone not found"
 
             if __name__ == '__main__':
@@ -73,27 +76,13 @@ def zone_get(
             else:
                 raise ValueError(error_message)
 
-        # return the expected zone ID or zone
-        if id_only:
-            # return the zone_id
-            result = matching_zone['zone']['id']
-
-            if __name__ == '__main__':
-                print(result)
-                sys.exit(0)  # exit successfully
-
-            return result
-        else:
-            # return all zone data
-            if __name__ == '__main__':
-                print(json.dumps(matching_zone))
-                sys.exit(0)  # exit successfully
-
-            return matching_zone
-
     # if we don't have a zone_id by now, then get it from environment variable
     if zone_id is None:
-        zone_id = os.environ['ZONE_ID']
+        zone_id = os.environ.get('ZONE_ID')
+
+    # raise an exception if no zone_id or zone_name have been passed
+    if not zone_id and not zone_name:
+        helpers.exit_with_error("Must specify one of: zone_id, zone_name")
 
     # get response
     try:
@@ -108,15 +97,29 @@ def zone_get(
         # check response for errors
         helpers.check_response_for_errors(response_dict)
 
-        # when running via the terminal, print output to console then exit
-        if __name__ == '__main__':
-            print(decoded_response)
-            sys.exit(0)  # exit successfully
-
-        return response_dict
+        # assign value of response_dict to zone
+        zone = response_dict
 
     except requests.exceptions.RequestException as err:
         helpers.handle_request_exception(err)
+
+    # return the expected zone ID or zone
+    if id_only:
+        # return the zone_id
+        zone_id = zone['zone']['id']
+
+        if __name__ == '__main__':
+            print(zone_id)
+            sys.exit(0)  # exit successfully
+
+        return zone_id
+    else:
+        # return all zone data
+        if __name__ == '__main__':
+            print(json.dumps(zone))
+            sys.exit(0)  # exit successfully
+
+        return zone
 
 
 if __name__ == '__main__':

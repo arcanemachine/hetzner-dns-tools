@@ -34,8 +34,11 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
         # get name from environment variable
         zone_name = os.environ.get('ZONE_NAME', None)
 
+    if os.environ.get('ZONE_ID'):
+        zone_id = os.environ['ZONE_ID']
+
     # if (domain) name exists, use it to obtain the zone
-    if zone_name:
+    if zone_name and not zone_id:
         from zone_list import zone_list
 
         # get list of zones
@@ -53,13 +56,11 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
 
         # if no matching zone found, halt and notify of error
         if zone_id is None:
-            error_message = "zone not found"
+            helpers.exit_with_error("zone not found")
 
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
+    # raise an exception if no zone_id or zone_name have been passed
+    if not zone_id and not zone_name:
+        helpers.exit_with_error("Must specify one of: zone_id, zone_name")
 
     if zone_id is None:
         # get zone_id from environment variable

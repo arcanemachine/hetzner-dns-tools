@@ -56,7 +56,7 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
         # check response for errors
         helpers.check_response_for_errors(response_dict)
 
-        # return the expected result
+        # return the expected value
         if id_only or os.environ.get('ID_ONLY') == '1':
             # return the zone_id
             result = response_dict['zone']['id']
