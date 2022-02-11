@@ -28,6 +28,11 @@ def zone_delete(hetzner_dns_token=None,
       in ALL_CAPS.
           - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
+    if os.environ.get('SHOW_HELP'):
+        # print the docstring and exit
+        print(zone_delete.__doc__)
+        sys.exit(0)
+
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']

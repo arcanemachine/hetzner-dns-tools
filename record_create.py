@@ -49,7 +49,8 @@ def record_create(hetzner_dns_token=None,
 
     if record_type is None:
         # get record_type from environment variable
-        record_type = os.environ['TYPE']
+        record_type = os.environ['RECORD_TYPE']\
+            if os.environ.get('RECORD_TYPE') else os.environ['TYPE']
 
     if value is None:
         # get value from environment variable

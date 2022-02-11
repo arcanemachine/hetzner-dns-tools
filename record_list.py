@@ -13,18 +13,24 @@ def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
     Get list of all records.
     https://dns.hetzner.com/api-docs/#operation/GetRecords
 
-    - Lookups can be performed using 'zone_name' or 'zone_id'.
+    - Lookups for individual zones can be done using 'zone_name'
+      or 'zone_id'.
 
-    - If no 'zone_name' or 'zone_id' is given, all records will be returned.
+    - If no 'zone_name' or 'zone_id' is given, all records will
+      be returned.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    - If using Bash environment variables, ensure that values are assigned
-      in ALL_CAPS.
+    - If using Bash environment variables, ensure that values are
+      assigned in ALL_CAPS.
           - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
+    if os.environ.get('SHOW_HELP'):
+        # print the docstring and exit
+        print(record_list.__doc__)
+        sys.exit(0)
 
     if hetzner_dns_token is None:
         # get token from environment variable
