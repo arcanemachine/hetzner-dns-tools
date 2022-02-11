@@ -1,0 +1,22 @@
+hetzner-dns-cli
+Usage:  hetzner-dns-cli [zone|record] [action] [help]
+
+Actions: list create get delete
+
+Examples:
+  - hetzner-dns-cli zone list
+  - hetzner-dns-cli record list
+
+
+Use environment variables to set parameters for requests.
+
+Examples:
+  - HETZNER_DNS_TOKEN=your-dns-token hetzner-dns-cli zone list
+  - NAME=your-domain.com hetzner-dns-cli zone create
+
+
+Need help? Type `help` after any action to view the help file for that action.
+
+
+Typing any invalid hetzner-dns-cli command will display this help file.
+

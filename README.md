@@ -30,7 +30,7 @@ All examples in this README assume you are in the root directory of this project
 
 - Navigate to the folder and run the command you want to use.
 
-Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zone_list.py` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
+Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
 
 **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
@@ -45,11 +45,11 @@ If you already know about Bash environment variables, you can safely skip this s
 
 #### For a single command
 
-To set an environment variable for a single command, just enter the key-value pair before the command you want to run. For example: `HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zone_list.py` **(WARNING: This command will be saved to your Bash history! Continue reading to learn how to avoid this)**
+To set an environment variable for a single command, just enter the key-value pair before the command you want to run. For example: `HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` **(WARNING: This command will be saved to your Bash history! Continue reading to learn how to avoid this)**
 
 To avoid saving the item to your bash history, begin the command with a space:
 
-Example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token ./zone_list.py` (Make sure there is a space at the beginning!)
+Example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` (Make sure there is a space at the beginning!)
 
 Please note that this method of setting environment variables is cumbersome and error-prone. Continue reading to learn better and easier ways of setting environment variables.
 
@@ -66,7 +66,7 @@ For example, in a file called `my-env.sh`:
 
 Then, run the command `source my-env.sh` to load the environment variable into your current session.
 
-Now, simply running the command `./zone_list.py` will automatically pass the `HETZNER_DNS_TOKEN` (or any other environment variables) to the command.
+Now, simply running the command `hetzner-dns-cli zone list` will automatically pass the `HETZNER_DNS_TOKEN` (or any other environment variables) to the command.
 
 
 ##### **Recommended:** Use `direnv` for easy use across multiple sessions
@@ -101,9 +101,9 @@ Again: **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 ### In Bash
 
-Simply execute the file you want to run. For example: `./zone_list.py` (Ensure that you set `HETZNER_DNS_TOKEN` environment variable for every command. Read [this section](#setting-environment-variables) to learn more about setting environment variables.) Data can be added to the command by setting environment variables, e.g. `NAME=your-domain.com ./zone_create.py`.
+Simply execute the file you want to run. For example: `hetzner-dns-cli zone list` (Ensure that you set `HETZNER_DNS_TOKEN` environment variable for every command. Read [this section](#setting-environment-variables) to learn more about setting environment variables.) Data can be added to the command by setting environment variables, e.g. `NAME=your-domain.com hetzner-dns-cli zone create`.
 
-To get the Python docstring (ie. help file) for a function, set the environment variable `SHOW_HELP` to a truthy value, e.g. `SHOW_HELP=1 ./zone_get.py`
+To get the Python docstring (ie. help file) for a function, set the environment variable `SHOW_HELP` to a truthy value, e.g. `SHOW_HELP=1 hetzner-dns-cli zone get`
 
 To know whether a script executed successfully or not, run `echo $?` after running a command. If the value of `$?` is `0`, the script executed successfully. If the value of `$?` is `1`, the script exited with an error.
 
@@ -135,7 +135,7 @@ These tools are namespaced by feature into modules:
   - zone_create, zone_get, and zone_delete
   - record_create, record_get, and record_delete
 
-e.g. Running `./zone_list.py` in Bash will list all available DNS zones. (Make sure to pass your `HETZNER_DNS_TOKEN` as an environment variable)
+e.g. Running `hetzner-dns-cli zone list` in Bash will list all available DNS zones. (Make sure to pass your `HETZNER_DNS_TOKEN` as an environment variable)
 
 
 ## Converting Results to Human-Readable Output
@@ -148,7 +148,7 @@ This method requires you to have `npm` installed:
   - Install the npm package `json` globally:
     - `npm i -g json`
   - Pipe the output of a command to the newly-installed `json` package:
-    - `./zone_list | json`
+    - `hetzner-dns-cli zone listjson`
 
 If you know of a better method (particularly one that doesn't require `npm` to be installed), please [submit a ticket](https://github.com/arcanemachine/hetzner-dns-cli/issues/new).
 
@@ -198,7 +198,7 @@ print(readable_dns_zones)
 
 ### In Bash
 
-`./zone_list.py`
+`hetzner-dns-cli zone list`
 
 
 ### In Python
@@ -225,11 +225,11 @@ Optional Parameters: `ttl`
 
 ### In Bash
 
-To return all data for the zone: `NAME=your-domain.com ./zone_create.py` or `ZONE_NAME=your-domain.com ./zone_create.py`
+To return all data for the zone: `NAME=your-domain.com hetzner-dns-cli zone create` or `ZONE_NAME=your-domain.com hetzner-dns-cli zone create`
 
-To return just the zone ID: `NAME=your-domain.com ID_ONLY=1 ./zone_create.py`
+To return just the zone ID: `NAME=your-domain.com ID_ONLY=1 hetzner-dns-cli zone create`
 
-To create a new zone with a custom TTL (default: 86400): `NAME=your-domain.com TTL=57600 ./zone_create.py`
+To create a new zone with a custom TTL (default: 86400): `NAME=your-domain.com TTL=57600 hetzner-dns-cli zone create`
 
 
 ### In Python
@@ -286,11 +286,11 @@ Optional Parameters: `id_only`
 
 ### In Bash
 
-To return all data for the zone by using the zone ID: `ZONE_ID=your-zone-id ./zone_get.py`
+To return all data for the zone by using the zone ID: `ZONE_ID=your-zone-id hetzner-dns-cli zone get`
 
-To return all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_get.py`
+To return all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com hetzner-dns-cli zone get`
 
-To return just the zone ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
+To return just the zone ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 hetzner-dns-cli zone get`
 
 
 ### In Python
@@ -337,9 +337,7 @@ print(zone_id)
 
 ## zone_update
 
-To update a zone, use `zone_delete` to delete a zone, and then use `zone_create` to create a new one.
-
-There is a `zone_update.py` file in the `unstable` branch, but I was not able to get it to work because the API wouldn't allow any changes. Perhaps I made an mistake in my implementation. However, `zone_delete` + `zone_create` do the job just fine for me, so I just use those.
+To update a zone, use `zone_delete` to delete a zone, and then use `zone_create` to create a new one. (I had some issues getting the function to work with Hetzner's backend (it wouldn't allow any changes to be made), plus the ability to delete and create records effectively makes the update function redundant. If you want to try to implement the function yourself, there is a `zone_update.py` file in the [experimental-functions](https://github.com/arcanemachine/hetzner-dns-cli/tree/experimental-functions) branch that may be of some help.
 
 
 ## zone_delete
@@ -357,9 +355,9 @@ Required Parameters: `zone_id *or* name/zone_name` (`name` and `zone_name` are i
 
 ### In Bash
 
-To delete a zone by its zone ID: `ZONE_ID=your-zone-id ./zone_delete.py`
+To delete a zone by its zone ID: `ZONE_ID=your-zone-id hetzner-dns-cli zone delete`
 
-To delete a zone by its zone (ie. domain) name: `ZONE_NAME=your-domain.com ./zone_delete.py` or `NAME=your-domain.com ./zone_delete.py`
+To delete a zone by its zone (ie. domain) name: `ZONE_NAME=your-domain.com hetzner-dns-cli zone delete` or `NAME=your-domain.com hetzner-dns-cli zone delete`
 
 
 ### In Python
@@ -394,11 +392,11 @@ Required Parameters: One of: `zone_id` or `zone_name`
 
 ### In Bash
 
-To return all data for all zones: `./record_list.py`
+To return all data for all zones: `hetzner-dns-cli record list`
 
-To return all data for a single zone, by zone ID: `ZONE_ID=your-zone-id ./record_list.py`
+To return all data for a single zone, by zone ID: `ZONE_ID=your-zone-id hetzner-dns-cli record list`
 
-To return all data for a single zone, by zone (ie. domain) name: `ZONE_NAME=your-domain.com ./record_list.py`
+To return all data for a single zone, by zone (ie. domain) name: `ZONE_NAME=your-domain.com hetzner-dns-cli record list`
 
 
 ### In Python
@@ -450,11 +448,11 @@ To get the ID of the zone you want to create the record in, you can use `zone_na
 
 ### In Bash
 
-To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`, and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 ./record_create.py`
+To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`, and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 hetzner-dns-cli record create`
 
-To return just the record ID after creating the record: `ZONE_ID=your-zone-id RECORD_TYPE=A NAME=www VALUE=1.1.1.1 ID_ONLY=1 ./record_create.py`
+To return just the record ID after creating the record: `ZONE_ID=your-zone-id RECORD_TYPE=A NAME=www VALUE=1.1.1.1 ID_ONLY=1 hetzner-dns-cli record create`
 
-To create a new zone with a custom TTL (default is `86400`) and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 TTL=57600 ./record_create.py`
+To create a new zone with a custom TTL (default is `86400`) and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 TTL=57600 hetzner-dns-cli record create`
 
 
 ### In Python
@@ -538,17 +536,17 @@ These parameters can be given truthy values to enable them:
 
 ### In Bash
 
-To return all data for single record via the record's ID: `RECORD_ID=your-record-id ./record_get.py`
+To return all data for single record via the record's ID: `RECORD_ID=your-record-id hetzner-dns-cli record get`
 
-To return all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+To return all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX ALLOW_MULTIPLE_RECORDS=1 hetzner-dns-cli record get`
 
-To return a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_get.py`
+To return a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www hetzner-dns-cli record get`
 
-To return all record IDs for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id ALLOW_MULTIPLE_RECORDS=1 ID_ONLY=1 ./record_get.py`
+To return all record IDs for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id ALLOW_MULTIPLE_RECORDS=1 ID_ONLY=1 hetzner-dns-cli record get`
 
-To return all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+To return all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 ALLOW_MULTIPLE_RECORDS=1 hetzner-dns-cli record get`
 
-To return the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_get.py`
+To return the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 hetzner-dns-cli record get`
 
 
 ### In Python
@@ -683,15 +681,15 @@ These parameters can be given truthy values to enable them:
 
 ### In Bash
 
-To delete a record by using the record ID: `RECORD_ID='your-record-id' ./record_delete.py`
+To delete a record by using the record ID: `RECORD_ID='your-record-id' hetzner-dns-cli record delete`
 
-To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_delete.py`
+To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www hetzner-dns-cli record delete`
 
-To delete all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX DELETE_MULTIPLE_RECORDS=1 ./record_delete.py`
+To delete all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX DELETE_MULTIPLE_RECORDS=1 hetzner-dns-cli record delete`
 
-To delete all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 ./record_delete.py`
+To delete all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 hetzner-dns-cli record delete`
 
-To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_delete.py`
+To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 hetzner-dns-cli record delete`
 
 
 ## In Python

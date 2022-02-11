@@ -1,0 +1,104 @@
+#!/usr/bin/bash
+
+get_script_dir () {
+  SOURCE="${BASH_SOURCE[0]}"
+  # While $SOURCE is a symlink, resolve it
+  while [ -h "$SOURCE" ]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$( readlink "$SOURCE" )"
+    # If $SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+  done
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  echo "$DIR"
+}
+dir_path=$(get_script_dir)
+
+
+function show_help_file () {
+  cat $dir_path/help.txt
+}
+
+case $1 in
+  zone)
+    case $2 in
+      list)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/zone_list.py
+        else
+          python3 $dir_path/zone_list.py
+        fi
+        ;;
+      create)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/zone_create.py
+        else
+          python3 $dir_path/zone_create.py
+        fi
+        ;;
+      get)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/zone_get.py
+        else
+          python3 $dir_path/zone_get.py
+        fi
+        ;;
+      delete)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/zone_delete.py
+        else
+          python3 $dir_path/zone_delete.py
+        fi
+        ;;
+      *)
+        show_help_file
+        ;;
+    esac
+    ;;
+  record)
+    case $2 in
+      list)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/record_list.py
+        else
+          python3 $dir_path/record_list.py
+        fi
+        ;;
+      create)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/record_create.py
+        else
+          python3 $dir_path/record_create.py
+        fi
+        ;;
+      get)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/record_get.py
+        else
+          python3 $dir_path/record_get.py
+        fi
+        ;;
+      delete)
+        if [ "$3" == "help" ]
+        then
+          SHOW_HELP=1 python3 $dir_path/record_delete.py
+        else
+          python3 $dir_path/record_delete.py
+        fi
+        ;;
+      *)
+        show_help_file
+        ;;
+    esac
+    ;;
+  *)
+    show_help_file
+    ;;
+esac
