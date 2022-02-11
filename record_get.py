@@ -21,7 +21,7 @@ def record_get(hetzner_dns_token=None,
                value=None,
                get_first_record=False,
                allow_multiple_records=False,
-               allow_multiple_zones=False,
+               search_all_zones=False,
                id_only=False):
     """
     Get info about an existing record.
@@ -30,6 +30,9 @@ def record_get(hetzner_dns_token=None,
     - Lookups can be performed directly with 'record_id', or indirectly
       using a combination of 'name', 'ttl', 'record_type', 'value',
       'zone_id', and 'zone_name'.
+
+    - If doing an indirect lookup, you must either specify a 'zone_id' or
+      'zone_name', or assign a truthy value to 'search_all_zones'.
 
     - If indirect lookups are performed, an exception will be raised if
       multiple records are returned, *UNLESS* you specify a truthy
@@ -130,21 +133,21 @@ def record_get(hetzner_dns_token=None,
         # get allow_multiple_records from environment variable
         allow_multiple_records = os.environ['ALLOW_MULTIPLE_RECORDS']
 
-    if not allow_multiple_zones\
-            and os.environ.get('ALLOW_MULTIPLE_ZONES'):
-        # get allow_multiple_zones from environment variable
-        allow_multiple_zones = os.environ['ALLOW_MULTIPLE_ZONES']
+    if not search_all_zones\
+            and os.environ.get('SEARCH_ALL_ZONES'):
+        # get search_all_zones from environment variable
+        search_all_zones = os.environ['SEARCH_ALL_ZONES']
 
     # BEGIN validation #
 
     # if no record_id exists, ensure that zone_name or zone_id exist,
     # in order to prevent pulling records from multiple zones
     if not record_id and not zone_name and not zone_id\
-            and not allow_multiple_zones:
+            and not search_all_zones:
         error_message = "In order to prevent records from being pulled from "\
             "more than one zone, you must specify one (or more) of: "\
             "record_id, zone_id, or zone_name. You can override this "\
-            "behavior by assigning a truthy value to 'allow_multiple_zones'."
+            "behavior by assigning a truthy value to 'search_all_zones'."
         helpers.exit_with_error(error_message)
 
     # ensure that one or more optional parameters exist before doing

@@ -42,13 +42,16 @@ def record_delete(hetzner_dns_token=None,
                   value=None,
                   get_first_record=None,
                   delete_multiple_records=False,
-                  allow_multiple_zones=False):
+                  search_all_zones=False):
     """
     Delete an existing zone.
 
     - Deletions can be performed directly with 'record_id', or indirectly
       using a combination of 'name', 'ttl', 'record_type', 'value',
       'zone_id', and 'zone_name'.
+
+    - If doing an indirect lookup, you must either specify a 'zone_id' or
+      'zone_name', or assign a truthy value to 'search_all_zones'.
 
     - If indirect lookups are performed, an exception will be raised if
       multiple records are returned.
@@ -78,10 +81,10 @@ def record_delete(hetzner_dns_token=None,
         # get get_first_record from environment variable
         get_first_record = os.environ['GET_FIRST_RECORD']
 
-    if not allow_multiple_zones\
-            and os.environ.get('ALLOW_MULTIPLE_ZONES'):
-        # get allow_multiple_zones from environment variable
-        allow_multiple_zones = os.environ['ALLOW_MULTIPLE_ZONES']
+    if not search_all_zones\
+            and os.environ.get('SEARCH_ALL_ZONES'):
+        # get search_all_zones from environment variable
+        search_all_zones = os.environ['SEARCH_ALL_ZONES']
 
     if not delete_multiple_records\
             and os.environ.get('DELETE_MULTIPLE_RECORDS'):
@@ -115,8 +118,6 @@ def record_delete(hetzner_dns_token=None,
             # get value from environment variable
             value = os.environ['VALUE']
 
-        multiple_zones = allow_multiple_zones
-
         # this method will return a string if one record is returned,
         # and a list if multiple records are returned
         record_get_id_result = record_get(zone_id=zone_id,
@@ -128,7 +129,7 @@ def record_delete(hetzner_dns_token=None,
                                           id_only=True,
                                           get_first_record=get_first_record,
                                           allow_multiple_records=True,
-                                          allow_multiple_zones=multiple_zones)
+                                          search_all_zones=search_all_zones)
 
         if type(record_get_id_result) == list:
             records_count = len(record_get_id_result)
@@ -158,7 +159,6 @@ def record_delete(hetzner_dns_token=None,
             delete_record_by_id(hetzner_dns_token, record_id_value)
     else:
         helpers.exit_with_error("No 'record_id' or 'record_ids' found.")
-
 
 
 if __name__ == '__main__':
