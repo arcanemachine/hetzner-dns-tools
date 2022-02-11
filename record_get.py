@@ -15,11 +15,11 @@ def record_get(hetzner_dns_token=None,
                record_id=None,
                zone_id=None,
                zone_name=None,
-               name=None,
-               ttl=None,
                record_type=None,
+               name=None,
                value=None,
-               get_first_record=False,
+               ttl=None,
+               first_record_only=False,
                allow_multiple_records=False,
                search_all_zones=False,
                id_only=False):
@@ -36,7 +36,7 @@ def record_get(hetzner_dns_token=None,
 
     - If indirect lookups are performed, an exception will be raised if
       multiple records are returned, *UNLESS* you specify a truthy
-      value for the 'allow_multiple_records' or the 'get_first_record'
+      value for the 'allow_multiple_records' or the 'first_record_only'
       parameters.
 
     - If 'id_only' passed in args or as environment variable (ID_ONLY),
@@ -107,32 +107,36 @@ def record_get(hetzner_dns_token=None,
         # get zone_name from environment variable
         zone_name = os.environ['ZONE_NAME']
 
-    if name is None and os.environ.get('NAME'):
-        # get name from environment variable
-        name = os.environ.get('NAME', None)
-
-    if ttl is None and os.environ.get('TTL'):
-        # get ttl from environment variable
-        ttl = int(os.environ['TTL'])
-
     if record_type is None and os.environ.get('TYPE'):
         # get record_type from environment variable
         record_type = os.environ['RECORD_TYPE']\
             if os.environ.get('RECORD_TYPE') else os.environ['TYPE']
 
+    if name is None and os.environ.get('NAME'):
+        # get name from environment variable
+        name = os.environ.get('NAME', None)
+
     if value is None and os.environ.get('VALUE'):
         # get value from environment variable
         value = os.environ['VALUE']
 
-    if not get_first_record\
-            and os.environ.get('GET_FIRST_RECORD'):
-        # get get_first_record from environment variable
-        get_first_record = os.environ['GET_FIRST_RECORD']
+    if ttl is None and os.environ.get('TTL'):
+        # get ttl from environment variable
+        ttl = int(os.environ['TTL'])
+
+    if not first_record_only\
+            and os.environ.get('FIRST_RECORD_ONLY'):
+        # get first_record_only from environment variable
+        first_record_only = os.environ['FIRST_RECORD_ONLY']
 
     if not allow_multiple_records\
             and os.environ.get('ALLOW_MULTIPLE_RECORDS'):
         # get allow_multiple_records from environment variable
         allow_multiple_records = os.environ['ALLOW_MULTIPLE_RECORDS']
+
+    if first_record_only and allow_multiple_records:
+        helpers\
+            .exit_with_error("This combination of options doesn't make sense.")
 
     if not search_all_zones\
             and os.environ.get('SEARCH_ALL_ZONES'):
@@ -230,7 +234,7 @@ def record_get(hetzner_dns_token=None,
     if len(filtered_records) > 1:
         records_count = len(filtered_records)
         plural = "s" if records_count != 1 else ""
-        if get_first_record:
+        if first_record_only:
             # if id_only, return just the record ID
             if id_only:
                 if __name__ == '__main__':
@@ -266,7 +270,7 @@ def record_get(hetzner_dns_token=None,
             error_message =\
                 f"Found {records_count} record{plural}. Assign a truthy "\
                 "value to 'allow_multiple_records' To get all relevant "\
-                "records, or use 'get_first_record' to get only the "\
+                "records, or use 'first_record_only' to get only the "\
                 "first record. Capitalize these values if using "\
                 "environment variables."
             helpers.exit_with_error(error_message)

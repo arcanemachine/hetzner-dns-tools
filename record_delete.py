@@ -40,7 +40,7 @@ def record_delete(hetzner_dns_token=None,
                   ttl=None,
                   record_type=None,
                   value=None,
-                  get_first_record=None,
+                  first_record_only=None,
                   delete_multiple_records=False,
                   search_all_zones=False):
     """
@@ -76,10 +76,10 @@ def record_delete(hetzner_dns_token=None,
         # get record_ids from environment variable
         record_ids = os.environ['RECORD_IDS']
 
-    if not get_first_record\
-            and os.environ.get('GET_FIRST_RECORD'):
-        # get get_first_record from environment variable
-        get_first_record = os.environ['GET_FIRST_RECORD']
+    if not first_record_only\
+            and os.environ.get('FIRST_RECORD_ONLY'):
+        # get first_record_only from environment variable
+        first_record_only = os.environ['FIRST_RECORD_ONLY']
 
     if not search_all_zones\
             and os.environ.get('SEARCH_ALL_ZONES'):
@@ -128,7 +128,7 @@ def record_delete(hetzner_dns_token=None,
                                           record_type=record_type,
                                           value=value,
                                           id_only=True,
-                                          get_first_record=get_first_record,
+                                          first_record_only=first_record_only,
                                           allow_multiple_records=True,
                                           search_all_zones=search_all_zones)
 
