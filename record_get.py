@@ -27,6 +27,18 @@ def record_get(hetzner_dns_token=None,
     Get info about an existing record.
     https://dns.hetzner.com/api-docs/#operation/GetRecord
 
+    Required* Parameters: One of: `record_id` or `zone_id` or `zone_name`
+
+    Optional Parameters:
+      Filters: record_type, name, value, ttl,
+      Formats: id_only
+      Options: first_record_only, allow_multiple_records, search_all_zones
+
+
+    * This function will raise an exception if multiple records are
+      returned, *unless* the `first_record_only` *or*
+      `allow_multiple_records` parameters are truthy.
+
     - Lookups can be performed directly with 'record_id', or indirectly
       using a combination of 'name', 'ttl', 'record_type', 'value',
       'zone_id', and 'zone_name'.

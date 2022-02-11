@@ -15,7 +15,6 @@ All examples in this README assume you are in the root directory of this project
 ## Table of Contents
 
 - [Setup](#setup)
-- [How to Set Environment Variables in Bash](#how-to-set-environment-variables-in-bash)
 - [Setting Parameters](#setting-parameters)
 - [How to Use This Library](#how-to-use-this-library)
 - [Project Structure](#project-structure)
@@ -32,76 +31,30 @@ All examples in this README assume you are in the root directory of this project
 
 Example (from project root folder): ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
 
-**All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
-
-
-## How to Set Environment Variables in Bash
-
-If you already know about Bash environment variables, you can safely skip this section. If you don't, you should read this section to avoid leaking your DNS token in your bash history.
-
-### Setting environment variables
-
-**NOTE:** The order of environment variables does not matter: `A=1 B=2 ./your-command.sh` will yield the same results as `B=2 A=1 ./your-command.sh`.
-
-#### For a single command
-
-To set an environment variable for a single command, just enter the key-value pair before the command you want to run. For example: `HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` **(WARNING: This command will be saved to your Bash history! Continue reading to learn how to avoid this)**
-
-To avoid saving the item to your bash history, begin the command with a space:
-
-Example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-cli zone list` (Make sure there is a space at the beginning!)
-
-Please note that this method of setting environment variables is cumbersome and error-prone. Continue reading to learn better and easier ways of setting environment variables.
-
-
-#### Setting persistent environment variables
-
-##### For the current terminal session
-
-You can set environment variables in a shell script, and use `source` to load them into the current session:
-
-For example, in a file called `my-env.sh`:
-
-```export HETZNER_DNS_TOKEN=your-hetzner-dns-token```
-
-Then, run the command `source my-env.sh` to load the environment variable into your current session.
-
-Now, simply running the command `hetzner-dns-cli zone list` will automatically pass the `HETZNER_DNS_TOKEN` (or any other environment variables) to the command.
-
-
-##### **Recommended:** Use `direnv` for easy use across multiple sessions
-
-[Direnv](https://direnv.net/) is a simple and effective program that automatically loads environment variables when you `cd` into a certain directory or any of its subdirectories.
-
-After setting up direnv, navigate to any folder in this project and run this command to enable direnv for this project: `direnv allow`
-
-To automatically add your `HETZNER_DNS_TOKEN` whenever you are in the root folder of this project (or a subdirectory of it), create a `.env` file in the root folder of this project that looks like this:
-
-`HETZNER_DNS_TOKEN=your-hetzner-dns-token`
-
-***Note: Any environment variables saved in `.envrc` will be committed to the repo unless you modify this project's `.gitignore` file. We recommend that you save your secrets in a `.env` file or modify the `.gitignore` to prevent your secrets from ending up in a copy of this repo.***
-
+**Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
 
 ## Setting parameters
 
-There are two methods of settings parameters when making API calls:
-  - Environment variables (required when using these tools from Bash)
+There are two methods of setting parameters using this library:
+  - Bash environment variables
+    - e.g. `HETZNER_DNS_TOKEN=your-hetzner-token hetzner-dns-cli zone list`\*
   - Python arguments
+    - e.g. `zone_list(hetzner_dns_token='your-hetzner-token')`
 
-If using Python, any arguments used when calling a function will override the values of any environment variables.
+> \*If you are using this library via Bash, you may want to look into something like `[direnv](https://direnv.net/)` in order to prevent your DNS token from leaking into your `~/.bash history`.
 
-Please note that the `name` parameter is used in Hetzner's DNS API calls (specifically in `zone_create`), while the `zone_name` parameter is only used in `hetzner-dns-cli`.
+Any arguments used when calling a Python function will override the values of any environment variables.
 
-Again: **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
+Please note that the `name` parameter is used in Hetzner's DNS API calls (specifically in `zone_create` and `record_create`), while the `zone_name` parameter is only used in `hetzner-dns-cli`.
 
 
 ## How to Use This Library
 
-**Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
+**All API calls require a `hetzner_dns_token` parameter to be set.**
 
 ### In Bash
 
-Simply execute the file you want to run. For example: `hetzner-dns-cli zone list` (Ensure that you set `HETZNER_DNS_TOKEN` environment variable for every command. Read [this section](#setting-environment-variables) to learn more about setting environment variables.) Data can be added to the command by setting environment variables, e.g. `NAME=your-domain.com hetzner-dns-cli zone create`.
+Simply execute the file you want to run. For example: `hetzner-dns-cli zone list` (Ensure that you set `HETZNER_DNS_TOKEN` environment variable before every command. Read [this section](#setting-environment-variables) to learn more about setting environment variables.) Data can be added to the command by setting environment variables, e.g. `NAME=your-domain.com hetzner-dns-cli zone create`.
 
 To get the Python docstring (ie. help file) for a function, set the environment variable `SHOW_HELP` to a truthy value, e.g. `SHOW_HELP=1 hetzner-dns-cli zone get`
 
@@ -217,8 +170,9 @@ print(your_zones)
 
 *Create a new zone.* ([Hetzner DNS API Docs - Create Zone](https://dns.hetzner.com/api-docs/#operation/CreateZone))
 
-Required Parameters: `name/zone_name` (`name` and `zone_name` are interchangeable)
-Optional Parameters: `ttl`
+> **Required Parameters:** `name/zone_name` (`name` and `zone_name` are interchangeable)
+
+> Optional Parameters: `ttl`
 
 **NOTE:** `zone_create` and `zone_delete` allow the `name` and `zone_name` parameters (or the `NAME` and `ZONE_NAME` environment variables) to be used interchangeably. Note that the `name` parameter is used in Hetzner's API, but `zone_name` is commonly used in this library, so I allow both to be used to reduce the cognitive burden of having to switch from one to the other.
 
@@ -280,8 +234,9 @@ print(new_zone['zone']['ttl'])  # 57600
 
 *Get info about an existing zone.* ([Hetzner DNS API Docs - Get Zone](https://dns.hetzner.com/api-docs/#operation/GetZone))
 
-Required Parameters: One of: `zone_id` or `zone_name`
-Optional Parameters: `id_only`
+> **Required Parameters:** One of: `zone_id` or `zone_name`
+
+> Optional Parameters: `id_only`
 
 
 ### In Bash
@@ -344,11 +299,11 @@ To update a zone, use `zone_delete` to delete a zone, and then use `zone_create`
 
 *Delete an existing zone.* ([Hetzner DNS API Docs - Delete Zone](https://dns.hetzner.com/api-docs/#operation/DeleteZone))
 
+> **Required Parameters:** One of: `zone_id` or `zone_name/name`
+
 Zones can be deleted directly using a `zone_id`, or can be done indirectly by using any of the *Optional Parameters* as a lookup.
 
 Successful delete operations will return the string 'OK', and unsuccessful delete operations will raise a `ValueError` exception.
-
-Required Parameters: `zone_id *or* name/zone_name` (`name` and `zone_name` are interchangeable)
 
 **NOTE:** `zone_create` and `zone_delete` allow the `name` and `zone_name` parameters (or the `NAME` and `ZONE_NAME` environment variables) to be used interchangeably. Note that the `name` parameter is used in Hetzner's API, but `zone_name` is commonly used in this library, so I allow both to be used to reduce the cognitive burden of having to switch from one to the other.
 
@@ -387,7 +342,7 @@ zone_delete(hetzner_dns_token='your-token',
 
 *Get list of all records.* ([Hetzner DNS API Docs - Get All Records](https://dns.hetzner.com/api-docs/#operation/GetRecords))
 
-Required Parameters: One of: `zone_id` or `zone_name`
+> **Required Parameters:** One of: `zone_id` or `zone_name`
 
 
 ### In Bash
@@ -438,8 +393,9 @@ print(records)
 
 *Create a new record.* ([Hetzner DNS API Docs - Create Record](https://dns.hetzner.com/api-docs/#operation/CreateRecord))
 
-Required Parameters: `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
-Optional Parameters: `zone_name`, `ttl`, `id_only`
+> **Required Parameters:** `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
+
+> Optional Parameters: `zone_name`, `ttl`, `id_only`
 
 To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
 
@@ -512,12 +468,12 @@ print(new_record['record']['ttl'])  # 57600
 
 *Get info about an existing record.* ([Hetzner DNS API Docs - Get Record](https://dns.hetzner.com/api-docs/#operation/GetRecord))
 
-Required\* Parameters: One of: `record_id` or `zone_id` or `zone_name`
-Optional Parameters: {
-  Filters: `record_type`, `name`, `value`, `ttl`,
-  Formats: `id_only`
-  Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*
-}
+> **Required\* Parameters:** One of: `record_id` or `zone_id` or `zone_name`
+
+> Optional Parameters:\
+> &emsp;Filters: `record_type`, `name`, `value`, `ttl`\
+> &emsp;Formats: `id_only`\
+> &emsp;Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*
 
 \*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
 
@@ -655,15 +611,15 @@ As with the `zone` modules, you can use `record_delete` and `record_create` to u
 
 *Delete an existing record.* ([Hetzner DNS API Docs - Delete Record](https://dns.hetzner.com/api-docs/#operation/DeleteRecord))
 
+> **Required\* Parameters:** One of: `record_id` or `zone_id` or `zone_name`
+
+> Optional Parameters:\
+>   &emsp;Filters: `record_type`, `name`, `value`, `ttl`\
+>   &emsp;Options: `delete_multiple_records`, `first_record_only`, `search_all_zones`\*
+
 Records can be deleted directly using a `record_id`, or can be done indirectly by using any of the *Optional Parameters* as a lookup.
 
 Successful delete operations will return the string 'OK', and unsuccessful delete operations will raise a `ValueError` exception.
-
-Required\* Parameters: One of: `record_id` or `zone_id` or `zone_name`
-Optional Parameters: {
-  Filters: `record_type`, `name`, `value`, `ttl`,
-  Options: `delete_multiple_records`, `first_record_only`, `search_all_zones`\*
-}
 
 \*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
 

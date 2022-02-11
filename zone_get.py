@@ -16,6 +16,10 @@ def zone_get(
     Get info about an existing zone.
     https://dns.hetzner.com/api-docs/#operation/GetZone
 
+    Required Parameters: One of: `zone_id` or `zone_name`
+    Optional Parameters: `id_only`
+
+
     - Lookups can be performed using 'zone_name' or 'zone_id'.
 
     * hetzner_dns_token *MUST* be passed in args or as environment

@@ -15,15 +15,41 @@ get_script_dir () {
 dir_path=$(get_script_dir)
 
 
-function show_help_file () {
-  cat $dir_path/help.txt
+function usage () {
+  echo "hetzner-dns-cli"
+  echo "Usage:  hetzner-dns-cli [zone|record] [action] [ OPTIONS ]"
+  echo ""
+  echo "Actions: list create get delete"
+  echo ""
+  echo "Examples:"
+  echo "  - hetzner-dns-cli zone list"
+  echo "  - hetzner-dns-cli record list"
+  echo ""
+  echo "Setting parameters for requests:"
+  echo "  - Using command line flags"
+  echo "    - hetzner-dns-cli zone create --name your-domain.com"
+  echo "    - hetzner-dns-cli record get --zone-id your-zone-id --first-record-only"
+  echo "  - Using environment variables:"
+  echo "    - NAME=your-domain.com hetzner-dns-cli zone create"
+  echo "    - ZONE_ID=your-zone-id FIRST_RECORD_ONLY=1 hetzner-dns-cli zone get"
+  echo ""
+  echo "Type '--help' after any action to view the help file for that action."
+  echo "  - e.g. hetzner-dns-cli zone get --help"
+  echo ""
+  echo "Typing any invalid hetzner-dns-cli command will display this help file."
+  echo ""
 }
 
-case $1 in
+# save required args (noun and action) for later
+noun=$1
+action=$2
+
+# required args
+case $noun in
   zone)
-    case $2 in
+    case $action in
       list)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/zone_list.py
         else
@@ -31,7 +57,7 @@ case $1 in
         fi
         ;;
       create)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/zone_create.py
         else
@@ -39,7 +65,7 @@ case $1 in
         fi
         ;;
       get)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/zone_get.py
         else
@@ -47,7 +73,7 @@ case $1 in
         fi
         ;;
       delete)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/zone_delete.py
         else
@@ -55,14 +81,14 @@ case $1 in
         fi
         ;;
       *)
-        show_help_file
+        usage
         ;;
     esac
     ;;
   record)
-    case $2 in
+    case $action in
       list)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/record_list.py
         else
@@ -70,7 +96,7 @@ case $1 in
         fi
         ;;
       create)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/record_create.py
         else
@@ -78,7 +104,7 @@ case $1 in
         fi
         ;;
       get)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/record_get.py
         else
@@ -86,7 +112,7 @@ case $1 in
         fi
         ;;
       delete)
-        if [ "$3" == "help" ]
+        if [ "$help" == "help" ]
         then
           SHOW_HELP=1 python3 $dir_path/record_delete.py
         else
@@ -94,11 +120,11 @@ case $1 in
         fi
         ;;
       *)
-        show_help_file
+        usage
         ;;
     esac
     ;;
   *)
-    show_help_file
+    usage
     ;;
 esac

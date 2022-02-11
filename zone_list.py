@@ -13,6 +13,7 @@ def zone_list(hetzner_dns_token=None):
     Get list of all zones.
     https://dns.hetzner.com/api-docs/#operation/GetZones
 
+
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token

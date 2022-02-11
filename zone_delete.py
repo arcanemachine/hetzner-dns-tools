@@ -15,6 +15,9 @@ def zone_delete(hetzner_dns_token=None,
     """
     Delete an existing zone.
 
+    Required Parameters: One of: `zone_id` or `zone_name/name`
+
+
     - Lookups can be performed using 'zone_name/name' *OR* 'zone_id'.
 
     * hetzner_dns_token *MUST* be passed in args or as environment

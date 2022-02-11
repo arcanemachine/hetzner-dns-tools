@@ -20,6 +20,13 @@ def record_create(hetzner_dns_token=None,
     Create a new record.
     https://dns.hetzner.com/api-docs/#operation/CreateRecord
 
+    Required Parameters:
+      - `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
+
+    Optional Parameters:
+      - `zone_name`, `ttl`, `id_only`
+
+
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token

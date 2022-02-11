@@ -13,6 +13,9 @@ def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
     Get list of all records.
     https://dns.hetzner.com/api-docs/#operation/GetRecords
 
+    Required Parameters: One of: `zone_id` or `zone_name`
+
+
     - Lookups for individual zones can be done using 'zone_name'
       or 'zone_id'.
 

@@ -17,6 +17,11 @@ def zone_create(hetzner_dns_token=None,
     Create a new zone.
     https://dns.hetzner.com/api-docs/#operation/CreateZone
 
+    Required Parameters: `name/zone_name`
+      - `name` and `zone_name` are interchangeable in this function
+    Optional Parameters: `ttl`
+
+
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
