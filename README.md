@@ -240,7 +240,7 @@ from zone_create import zone_create
 new_zone = zone_create(hetzner_dns_token='your-token',
                        name='your-domain.com')  # can also use zone_name
 
-# return only the ID of the new zone
+# print the name of the new zone
 print(new_zone['zone']['name'])  # 'your-domain.com'
 
 ```
@@ -285,15 +285,15 @@ Optional parameters: `id_only`
 
 ##### In a Bash prompt
 
-To get all data for the zone by using the zone's ID: `ZONE_ID=your-zone-id ./zone_get.py`
+To return all data for the zone by using the zone's ID: `ZONE_ID=your-zone-id ./zone_get.py`
 
-To get all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_get.py`
+To return all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_get.py`
 
-To get just the zone's ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
+To return just the zone's ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
 
 #### In Python
 
-To get all data for the zone by using the zone's ID:
+To return all data for the zone by using the zone's ID:
 
 ```
 from zone_get import zone_get
@@ -307,7 +307,7 @@ print(zone['zone']['name'])
 ```
 
 
-To get all data for the zone by using the zone's domain name:
+To return all data for the zone by using the zone's domain name:
 
 ```
 from zone_get import zone_get
@@ -320,13 +320,13 @@ print(zone['zone']['id'])
 ```
 
 
-To get just the zone's ID by using the zone's domain name:
+To return just the zone's ID by using the zone's domain name:
 
 ```
 from zone_get import zone_get
 
 zone_id = zone_get(hetzner_dns_token='your-token',
-                   name='your-domain.com',
+                   zone_name='your-domain.com',
                    id_only=True)
 
 # print the ID of the zone
@@ -405,24 +405,24 @@ print(records)
 
 Create a new record.
 
-To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
-
 Required parameters: `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
 Optional parameters: `zone_name`, `ttl`, `id_only`
+
+To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
 
 **Note:** Hetzner's DNS API requires a the `type` parameter to specify the type of record (e.g. A, AAAA, CNAME, MX, etc.). Because the word `type` is a reserved keyword in Python, the `record` functions all use the `record_type` parameter instead. When using environment variables, either `TYPE` or `RECORD_TYPE` may be used interchangeably.
 
 ##### In a Bash prompt
 
-To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`: `ZONE_ID=your-zone-id TYPE=A NAME=www value=1.1.1.1 ./record_create.py`
+To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`, and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 ./record_create.py`
 
-To return just the record ID after creating the record: `ZONE_ID=your-zone-id TYPE=A NAME=www value=1.1.1.1 ID_ONLY=1 ./record_create.py`
+To return just the record ID after creating the record: `ZONE_ID=your-zone-id RECORD_TYPE=A NAME=www VALUE=1.1.1.1 ID_ONLY=1 ./record_create.py`
 
-To create a new zone with a custom TTL (default is `86400`) and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www value=1.1.1.1 TTL=57600 ./record_create.py`
+To create a new zone with a custom TTL (default is `86400`) and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 TTL=57600 ./record_create.py`
 
 #### In Python
 
-To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`:
+To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.1.1.1`, and return all record data:
 
 ```
 from record_create import record_create
@@ -430,96 +430,186 @@ from record_create import record_create
 # create a new record and return all record data
 new_record = record_create(hetzner_dns_token='your-token',
                            zone_id='your-zone-id',
-                           type='A',
-                           )
+                           record_type='A',
+                           name='www',
+                           value='1.1.1.1')
 
-# return only the ID of the new zone
-print(new_zone['zone']['name'])  # 'your-domain.com'
+# print the record's 'created' value
+print(new_record['record']['created'])
 ```
 
-To return just the ID for the new zone:
+To return just the record ID after creating the record:
 
 ```
-from zone_create import zone_create
+from record_create import record_create
 
-# create a new zone and return just the zone_id
-new_zone_id = zone_create(hetzner_dns_token='your-token',
-                          zone_name='your-domain.com',  # can also use name
-                          id_only=True)
+# create a new record and return all record data
+new_record_id = record_create(hetzner_dns_token='your-token',
+                              zone_id='your-zone-id',
+                              record_type='A',
+                              name='www',
+                              value='1.1.1.1',
+                              id_only=True)
 
-# print the ID of the new zone
-print(new_zone_id)
+# print the record's ID
+print(new_record_id)
 ```
 
-To create a new zone with a custom TTL (default: 86400):
+To create a new zone with a custom TTL (default is `86400`) and return all record data:
 
 ```
-from zone_create import zone_create
+from record_create import record_create
 
-# create a new zone and return all zone data
-new_zone = zone_create(hetzner_dns_token='your-token',
-                       name='your-domain.com',  # can also use zone_name
-                       ttl=57600)
+# create a new record and return all record data
+new_record = record_create(hetzner_dns_token='your-token',
+                           zone_id='your-zone-id',
+                           record_type='A',
+                           name='www',
+                           value='1.1.1.1',
+                           ttl=57600)
 
-# print the TTL of the new zone
-print(new_zone['zone']['ttl'])  # 57600
+# print the record's 'ttl' value
+print(new_record['record']['ttl'])  # 57600
 ```
 
 
-#### zone_get
+#### record_get
 
-Get info about an existing zone.
+Get info about an existing record.
+
+Required\* parameters: One of: `record_id` or `zone_id` or `zone_name`
+Optional parameters: {
+  Filters: `record_type`, `name`, `value`, `ttl`,
+  Formats: `id_only`
+  Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*
+}
+
+\*If `search_all_zones` is truthy, then you do not need to include any of the required parameters. Their purpose is to ensure that records will only be returned for a single zone.
+
+**Note:** This function will raise an exception if multiple records are returned unless the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
+
+
+##### Options
+
+These values can be given truthy values to activate them.
+
+`allow_multiple_records` - If multiple records are returned, return all of them.
+
+`first_record_only` - Return only the first record found. (There is no guarantee of any ordering)
+
+`search_all_zones` - Allow records to be returned from all zones. No required parameters are needed when using this option.
+
+`id_only` - Returns only the ID of the given record. If this argument and `allow_multiple_records` are both truthy, a list of record IDs will be returned.
+
 
 ##### In a Bash prompt
 
-To get all data for the zone by using the zone's ID: `ZONE_ID=your-zone-id ./zone_get.py`
+To return all data for single record via the record's ID: `RECORD_ID=your-record-id ./record_get.py`
 
-To get all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_get.py`
+To return a zone's A record with a name of 'www' by using a zone (domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_get.py`
 
-To get just the zone's ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
+To return all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+
+To return all record IDs for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id ALLOW_MULTIPLE_RECORDS=1 ID_ONLY=1 ./record_get.py`
+
+To return all A records from all zones with a name of '@' (the root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+
+To return the first A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_get.py`
 
 #### In Python
 
-To get all data for the zone by using the zone's ID:
+To return all data for single record via the record's ID:
 
 ```
-from zone_get import zone_get
+from record_get import record_get
 
-zone = zone_get(hetzner_dns_token='your-token',
-                zone_id='your-zone-id')
+record = record_get(hetzner_dns_token='your-token',
+                    record_id='your-record-id')
+```
 
-# print the name of the zone
-print(zone['zone']['name'])
+To return a zone's A record with a name of 'www' by using a zone (domain) name as a lookup:
 
+```
+from record_get import record_get
+
+record = record_get(hetzner_dns_token='your-token',
+                    zone_id='your-zone-id',
+                    record_type='A',
+                    name='www')
+```
+
+To return all A records for a zone by using a zone ID as a lookup:
+
+```
+from record_get import record_get
+
+records = record_get(hetzner_dns_token='your-token',
+                     zone_id='your-zone-id',
+                     record_type='A',
+                     allow_multiple_records=True)
 ```
 
 
-To get all data for the zone by using the zone's domain name:
+To return all MX records for a zone by using a zone ID as a lookup:
 
 ```
-from zone_get import zone_get
+from record_get import record_get
 
-zone = zone_get(hetzner_dns_token='your-token',
-                zone_name='your-domain.com')
-
-# print the ID of the zone
-print(zone['zone']['id'])
-
+records = record_get(hetzner_dns_token='your-token',
+                     zone_id='your-zone-id',
+                     record_type='MX',
+                     allow_multiple_records=True)
 ```
 
 
-To get just the zone's ID by using the zone's domain name:
+To return all record IDs for a zone by using a zone ID as a lookup:
 
 ```
-from zone_get import zone_get
+from record_get import record_get
 
-zone_id = zone_get(hetzner_dns_token='your-token',
-                   name='your-domain.com',
-                   id_only=True)
+# this value will contain a list of zone IDs
+record_ids = record_get(hetzner_dns_token='your-token',
+                        zone_id='your-zone-id',
+                        allow_multiple_records=True,
+                        id_only=True)
+```
 
-# print the ID of the zone
-print(zone_id)
+To return all record IDs for a zone by using a zone ID as a lookup:
 
+```
+from record_get import record_get
+
+# this value will contain a list of zone IDs
+record_ids = record_get(hetzner_dns_token='your-token',
+                        zone_id='your-zone-id',
+                        allow_multiple_records=True,
+                        id_only=True)
+```
+
+To return all A records from all zones with a name of '@' (the root):
+
+```
+from record_get import record_get
+
+# this value will contain a list of zone IDs
+record_ids = record_get(hetzner_dns_token='your-token',
+                        search_all_zones=True,
+                        record_type='A',
+                        name='@',
+                        allow_multiple_records=True)
+```
+
+To return the first record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (domain) name as a lookup:
+
+```
+from record_get import record_get
+
+# this value will contain a list of zone IDs
+record_ids = record_get(hetzner_dns_token='your-token',
+                        zone_name='your-domain.com',
+                        value='1.2.3.4',
+                        ttle=57600,
+                        first_record_only=True)
 ```
 
 
