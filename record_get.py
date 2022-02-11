@@ -186,26 +186,20 @@ def record_get(hetzner_dns_token=None,
         filtered_records = records
     else:
         filtered_records = []
-        if name:
-            for record in records:
-                if record['name'] == name\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if ttl:
-            for record in records:
-                if record['ttl'] == ttl\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if record_type:
-            for record in records:
-                if record['type'] == record_type\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
-        if value:
-            for record in records:
-                if record['value'] == value\
-                        and record not in filtered_records:
-                    filtered_records.append(record)
+        for record in records:
+            # if record does not meet any one qualifying criterion,
+            # then skip over it and continue the loop
+            if name and record['name'] != name:
+                continue
+            if ttl and record['ttl'] != ttl:
+                continue
+            if record_type and record['type'] != record_type:
+                continue
+            if value and record['value'] != value:
+                continue
+            # if the record has not fail any of the qualifications,
+            # then add it to the list
+            filtered_records.append(record)
 
     # if no records found, return empty dictionary
     if len(filtered_records) == 0:
@@ -274,11 +268,7 @@ def record_get(hetzner_dns_token=None,
                 "records, or use 'get_first_record' to get only the "\
                 "first record. Capitalize these values if using "\
                 "environment variables."
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
+            helpers.exit_with_error(error_message)
 
 
 if __name__ == '__main__':

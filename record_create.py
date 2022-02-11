@@ -76,16 +76,13 @@ def record_create(hetzner_dns_token=None,
                 zone_id = zone['id']
                 break
 
-        # if no matching zone found, halt and notify of error
+        # if no matching zone found, then exit with error
         if zone_id is None:
-            error_message = "zone not found"
+            helpers.exit_with_error("zone not found")
 
-            if __name__ == '__main__':
-                print(f"Error: {error_message}")
-                sys.exit(1)  # exit with error
-            else:
-                raise ValueError(error_message)
-
+    if not zone_name and not zone_id:
+        # if neither zone_name or zone_id exist, then exit with error
+        helpers.exit_with_error("Must include one of: zone_id, zone_name")
     if zone_id is None:
         # get zone_id from environment variable
         zone_id = os.environ['ZONE_ID']
