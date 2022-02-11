@@ -8,7 +8,11 @@ import requests
 import hetzner_dns_helpers as helpers
 
 
-def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
+def zone_create(hetzner_dns_token=None,
+                name=None,
+                id_only=False,
+                ttl=None,
+                zone_name=None):
     """
     Create a new zone.
     https://dns.hetzner.com/api-docs/#operation/CreateZone
@@ -17,8 +21,11 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    * name *MUST* passed in args or as environment variable (NAME).
+    * name *MUST* passed in args or as environment variable.
       It is used to set the (domain) name of the new zone.
+
+      - TIP: zone_create and zone_delete allow ZONE_NAME and NAME to
+        be used interchangeably.
 
     - If 'id_only' passed in args or as environment variable (ID_ONLY),
       return just the zone ID after creating the new zone.
@@ -33,7 +40,12 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
 
     if name is None:
         # get domain name from environment variable
-        name = os.environ['NAME']
+        name = os.environ['ZONE_NAME']\
+            if os.environ.get('ZONE_NAME') else os.environ['NAME']
+    elif zone_name:
+        # allow zone_name and name to be used interchangeably
+        # for zone_create and zone_delete
+        name = zone_name
 
     if ttl is None:
         if os.environ.get('TTL'):
@@ -73,8 +85,6 @@ def zone_create(hetzner_dns_token=None, name=None, id_only=False, ttl=None):
                 sys.exit(0)  # exit successfully
 
             return response_dict
-
-        return response_dict
 
     except requests.exceptions.RequestException as err:
         helpers.handle_request_exception(err)

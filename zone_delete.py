@@ -8,19 +8,21 @@ import requests
 import hetzner_dns_helpers as helpers
 
 
-def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
+def zone_delete(hetzner_dns_token=None,
+                zone_id=None,
+                zone_name=None,
+                name=None):
     """
     Delete an existing zone.
 
-    - Lookups can be performed using 'zone_name' *OR* 'zone_id'.
+    - Lookups can be performed using 'zone_name/name' *OR* 'zone_id'.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    - If using Bash environment variables, ensure that values are assigned
-      in ALL_CAPS:
-          - zone_id in Python -> ZONE_ID in environment variable
+      - TIP: zone_create and zone_delete allow ZONE_NAME and NAME to
+        be used interchangeably.
 
     - If using Bash environment variables, ensure that values are assigned
       in ALL_CAPS.
@@ -32,7 +34,12 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
 
     if zone_name is None:
         # get name from environment variable
-        zone_name = os.environ.get('ZONE_NAME', None)
+        zone_name = os.environ['NAME']\
+            if os.environ.get('NAME') else os.environ.get('ZONE_NAME', None)
+    elif name:
+        # allow zone_name and name to be used interchangeably
+        # for zone_create and zone_delete
+        zone_name = name
 
     if os.environ.get('ZONE_ID'):
         zone_id = os.environ['ZONE_ID']
