@@ -102,7 +102,7 @@ Again: **All API calls require a `HETZNER_DNS_TOKEN` parameter to be set.**
 
 ## How to Use This Library
 
-**Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible. (Hetzner's DNS API can be slow sometimes... I regularly see response times of 5+ seconds for a single request)
+**Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
 
 ### In a Bash prompt
 
@@ -190,8 +190,6 @@ print(readable_dns_zones)
 
 **This section assumes that you have exported the `HETZNER_DNS_TOKEN` environment variable before running any Bash commands. Read [this section](#setting-environment-variables) if you don't know how to do this.)**
 
-### Zones
-
 #### zone_list
 
 Get list of all zones.
@@ -216,8 +214,8 @@ print(your_zones)
 
 Create a new zone.
 
-Required parameters: `name/zone_name` (`name` and `zone_name` are interchangeable)
-Optional parameters: `ttl`
+Required Parameters: `name/zone_name` (`name` and `zone_name` are interchangeable)
+Optional Parameters: `ttl`
 
 **NOTE:** `zone_create` and `zone_delete` allow the `name` and `zone_name` parameters (or the `NAME` and `ZONE_NAME` environment variables) to be used interchangeably. Note that the `name` parameter is used in Hetzner's API, but `zone_name` is commonly used in this library, so I allow both to be used to reduce the cognitive burden of having to switch from one to the other.
 
@@ -280,20 +278,20 @@ print(new_zone['zone']['ttl'])  # 57600
 
 Get info about an existing zone.
 
-Required parameters: One of: `zone_id` or `zone_name`
-Optional parameters: `id_only`
+Required Parameters: One of: `zone_id` or `zone_name`
+Optional Parameters: `id_only`
 
 ##### In a Bash prompt
 
-To return all data for the zone by using the zone's ID: `ZONE_ID=your-zone-id ./zone_get.py`
+To return all data for the zone by using the zone ID: `ZONE_ID=your-zone-id ./zone_get.py`
 
 To return all data for the zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_get.py`
 
-To return just the zone's ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
+To return just the zone ID by using the zone's domain name: `ZONE_NAME=your-domain.com ID_ONLY=1 ./zone_get.py`
 
 #### In Python
 
-To return all data for the zone by using the zone's ID:
+To return all data for the zone by using the zone ID:
 
 ```
 from zone_get import zone_get
@@ -320,7 +318,7 @@ print(zone['zone']['id'])
 ```
 
 
-To return just the zone's ID by using the zone's domain name:
+To return just the zone ID by using the zone's domain name:
 
 ```
 from zone_get import zone_get
@@ -345,7 +343,11 @@ There is a `zone_update.py` file in the `unstable` branch, but I was not able to
 
 Delete an existing zone.
 
-Required parameters: `zone_id *or* name/zone_name` (`name` and `zone_name` are interchangeable)
+Zones can be deleted directly using a `zone_id`, or can be done indirectly by using any of the *Optional Parameters* as a lookup.
+
+Successful delete operations will return the string 'OK', and unsuccessful delete operations will raise a `ValueError` exception.
+
+Required Parameters: `zone_id *or* name/zone_name` (`name` and `zone_name` are interchangeable)
 
 **NOTE:** `zone_create` and `zone_delete` allow the `name` and `zone_name` parameters (or the `NAME` and `ZONE_NAME` environment variables) to be used interchangeably. Note that the `name` parameter is used in Hetzner's API, but `zone_name` is commonly used in this library, so I allow both to be used to reduce the cognitive burden of having to switch from one to the other.
 
@@ -356,7 +358,7 @@ Required parameters: `zone_id *or* name/zone_name` (`name` and `zone_name` are i
 
 Get list of all records.
 
-Required parameters: One of: `zone_id` or `zone_name`
+Required Parameters: One of: `zone_id` or `zone_name`
 
 ##### In a Bash prompt
 
@@ -405,8 +407,8 @@ print(records)
 
 Create a new record.
 
-Required parameters: `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
-Optional parameters: `zone_name`, `ttl`, `id_only`
+Required Parameters: `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
+Optional Parameters: `zone_name`, `ttl`, `id_only`
 
 To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
 
@@ -477,28 +479,25 @@ print(new_record['record']['ttl'])  # 57600
 
 Get info about an existing record.
 
-Required\* parameters: One of: `record_id` or `zone_id` or `zone_name`
-Optional parameters: {
+Required\* Parameters: One of: `record_id` or `zone_id` or `zone_name`
+Optional Parameters: {
   Filters: `record_type`, `name`, `value`, `ttl`,
   Formats: `id_only`
   Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*
 }
 
-\*If `search_all_zones` is truthy, then you do not need to include any of the required parameters. Their purpose is to ensure that records will only be returned for a single zone.
+\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
 
-**Note:** This function will raise an exception if multiple records are returned unless the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
+**Note:** This function will raise an exception if multiple records are returned, \*unless\* the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
 
 
 ##### Options
 
-These values can be given truthy values to activate them.
+These parameters can be given truthy values to enable them:
 
 `allow_multiple_records` - If multiple records are returned, return all of them.
-
-`first_record_only` - Return only the first record found. (There is no guarantee of any ordering)
-
+`first_record_only` - Return only the first record found. (There is no guarantee of any ordering.)
 `search_all_zones` - Allow records to be returned from all zones. No required parameters are needed when using this option.
-
 `id_only` - Returns only the ID of the given record. If this argument and `allow_multiple_records` are both truthy, a list of record IDs will be returned.
 
 
@@ -506,15 +505,15 @@ These values can be given truthy values to activate them.
 
 To return all data for single record via the record's ID: `RECORD_ID=your-record-id ./record_get.py`
 
-To return a zone's A record with a name of 'www' by using a zone (domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_get.py`
-
 To return all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+
+To return a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_get.py`
 
 To return all record IDs for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id ALLOW_MULTIPLE_RECORDS=1 ID_ONLY=1 ./record_get.py`
 
-To return all A records from all zones with a name of '@' (the root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
+To return all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 ALLOW_MULTIPLE_RECORDS=1 ./record_get.py`
 
-To return the first A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_get.py`
+To return the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_get.py`
 
 #### In Python
 
@@ -527,7 +526,19 @@ record = record_get(hetzner_dns_token='your-token',
                     record_id='your-record-id')
 ```
 
-To return a zone's A record with a name of 'www' by using a zone (domain) name as a lookup:
+To return all MX records for a zone by using a zone ID as a lookup:
+
+```
+from record_get import record_get
+
+records = record_get(hetzner_dns_token='your-token',
+                     zone_id='your-zone-id',
+                     record_type='MX',
+                     allow_multiple_records=True)
+```
+
+
+To return a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup:
 
 ```
 from record_get import record_get
@@ -537,18 +548,6 @@ record = record_get(hetzner_dns_token='your-token',
                     record_type='A',
                     name='www')
 ```
-
-To return all A records for a zone by using a zone ID as a lookup:
-
-```
-from record_get import record_get
-
-records = record_get(hetzner_dns_token='your-token',
-                     zone_id='your-zone-id',
-                     record_type='A',
-                     allow_multiple_records=True)
-```
-
 
 To return all MX records for a zone by using a zone ID as a lookup:
 
@@ -586,7 +585,7 @@ record_ids = record_get(hetzner_dns_token='your-token',
                         id_only=True)
 ```
 
-To return all A records from all zones with a name of '@' (the root):
+To return all A records from all zones with a name of '@' (root):
 
 ```
 from record_get import record_get
@@ -599,7 +598,7 @@ record_ids = record_get(hetzner_dns_token='your-token',
                         allow_multiple_records=True)
 ```
 
-To return the first record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (domain) name as a lookup:
+To return the first record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup:
 
 ```
 from record_get import record_get
@@ -613,65 +612,106 @@ record_ids = record_get(hetzner_dns_token='your-token',
 ```
 
 
-#### zone_update
+#### record_update
 
-To update a zone, use `zone_delete` to delete a zone, and then use `zone_create` to create a new one.
-
-There is a `zone_update.py` file in the `unstable` branch, but I was not able to get it to work because the API wouldn't allow any changes. Perhaps I made an mistake in my implementation. However, `zone_delete` + `zone_create` do the job just fine for me, so I just use those.
+As with the `zone` modules, you can use `record_delete` and `record_create` to update a record. This library does not currently have a native `record_update` module.
 
 
-#### zone_delete
+#### record_delete
 
 Delete an existing zone.
 
-**NOTE:** `zone_create` and `zone_delete` allow the `name` and `zone_name` parameters (or the `NAME` and `ZONE_NAME` environment variables) to be used interchangeably. Note that the `name` parameter is used in Hetzner's API, but `zone_name` is commonly used in this library, so I allow both to be used to reduce the cognitive burden of having to switch from one to the other.
+Records can be deleted directly using a `record_id`, or can be done indirectly by using any of the *Optional Parameters* as a lookup.
+
+Successful delete operations will return the string 'OK', and unsuccessful delete operations will raise a `ValueError` exception.
+
+Required\* Parameters: One of: `record_id` or `zone_id` or `zone_name`
+Optional Parameters: {
+  Filters: `record_type`, `name`, `value`, `ttl`,
+  Options: `delete_multiple_records`, `first_record_only`, `search_all_zones`\*
+}
+
+\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
+
+**Note:** This function will raise an exception if multiple records are returned, \*unless\* the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
+
+##### Options
+
+These parameters can be given truthy values to enable them:
+
+`delete_multiple_records` - Delete all matching records, even if there is more than one record returned.
+`first_record_only` - Delete only the first record returned. (There is no guarantee of any ordering.)
+`search_all_zones` - Allow records to be returned from all zones. None of "required" parameters are needed when using this option.
+
 
 ##### In a Bash prompt
 
-**All successful delete requests will return the value 'OK'**
+To delete a record by using the record ID: `RECORD_ID='your-record-id' ./record_delete.py`
 
-To delete a zone by using the zone's ID: `ZONE_ID='your-zone-id' ./zone_delete.py`
+To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www ./record_delete.py`
 
-To delete a zone by using the zone's domain name: `ZONE_NAME=your-domain.com ./zone_delete.py` or `NAME=your-domain.com ./zone_delete.py`
+To delete all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX DELETE_MULTIPLE_RECORDS=1 ./record_delete.py`
+
+To delete all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 ./record_delete.py`
+
+To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 ./record_delete.py`
+
 
 #### In Python
 
-**All successful delete requests will return the string 'OK'**
-
-To delete a zone by using the zone's ID:
+To delete a record by using the record ID:
 
 ```
-from zone_delete import zone_delete
+from record_delete import record_delete
 
-response = zone_delete(hetzner_dns_token='your-token',
-                       zone_id='your-zone-id')
-
-# print the response from the server
-print(response)  # 'OK'
-
+record_delete(hetzner_dns_token='your-token',
+              record_id='your-record-id')
 ```
 
-To delete a zone by using the zone's domain name:
+To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup:
 
 ```
-from zone_get import zone_get
+from record_delete import record_delete
 
-response = zone_delete(hetzner_dns_token='your-token',
-                       zone_name='your-domain.com')
-
-# print the response from the server
-print(response)  # 'OK'
+record_delete(hetzner_dns_token='your-token',
+              zone_name='your-domain.com',
+              record_type='A',
+              name='www')
 ```
 
-
-## Using in Python Modules
-
-These tools can be imported as python modules, whose primary functions have the same name as the module. For example, this function...:
+To delete all MX records for a zone by using a zone ID as a lookup:
 
 ```
-from zone_list import zone_list
+from record_delete import record_delete
 
-zones = zone_list()
+record_delete(hetzner_dns_token='your-token',
+              zone_id='your-zone-id',
+              record_type='MX',
+              delete_multiple_records=True)
 ```
 
-...will return a dictionary containing the expected values.
+To delete all A records from all zones with a name of '@' (root):
+
+```
+from record_delete import record_delete
+
+# will raise ValueError return 'OK' if delete operation was successful
+record_delete(hetzner_dns_token='your-token',
+              record_type='A',
+              name='@',
+              search_all_zones=True)
+```
+
+To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup:
+
+```
+from record_delete import record_delete
+
+# will raise ValueError return 'OK' if delete operation was successful
+record_delete(hetzner_dns_token='your-token',
+              zone_name='your-domain.com',
+              record_type='A',
+              value='1.2.3.4',
+              ttl=57600,
+              first_record_only=True)
+```
