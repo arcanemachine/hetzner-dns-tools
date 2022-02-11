@@ -41,6 +41,9 @@ def zone_update(hetzner_dns_token=None,
 
     * 'zone_id' and 'name' *CANNOT* be used together.
 
+    - If using Bash environment variables, ensure that values are assigned
+      in ALL_CAPS.
+          - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
 
     if True:

@@ -27,6 +27,9 @@ def record_create(hetzner_dns_token=None,
     * name *MUST* passed in args or as environment variable (NAME).
       It is used to set the name of the new record (e.g. 'www').
 
+    - If using Bash environment variables, ensure that values are assigned
+      in ALL_CAPS.
+          - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
     if hetzner_dns_token is None:
         # get token from environment variable
