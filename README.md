@@ -1,6 +1,6 @@
 # hetzner-dns-cli
 
-### **This repo is a personal project. No tests have been written yet, but all functionality has been verified manually and works well for my needs. Use at your own risk.**
+### **Project Status: All basic CRUD functionality is complete. Tests still need to be written. Bulk record CREATE options not yet supported.**
 
 This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzner.com/api-docs/), namely Zones and Records.
 
