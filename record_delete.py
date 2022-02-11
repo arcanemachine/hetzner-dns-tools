@@ -44,17 +44,20 @@ def record_delete(hetzner_dns_token=None,
                   delete_multiple_records=False,
                   search_all_zones=False):
     """
-    Delete an existing zone.
+    Delete an existing record.
+    https://dns.hetzner.com/api-docs/#operation/DeleteRecord
 
     - Deletions can be performed directly with 'record_id', or indirectly
-      using a combination of 'name', 'ttl', 'record_type', 'value',
-      'zone_id', and 'zone_name'.
+      via a lookup that uses any combination of 'name', 'ttl',
+      'record_type', 'value', 'zone_id', and/or 'zone_name'.
 
-    - If doing an indirect lookup, you must either specify a 'zone_id' or
+    - If doing a lookup, you must either specify a 'zone_id' or
       'zone_name', or assign a truthy value to 'search_all_zones'.
 
-    - If indirect lookups are performed, an exception will be raised if
-      multiple records are returned.
+    - If a lookup are performed, an exception will be raised if
+      multiple records are returned, *unless* the parameter
+      'delete_multiple_records' is given a truthy value, in which
+      case all records returned will be deleted.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
