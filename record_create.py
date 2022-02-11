@@ -9,10 +9,10 @@ import hetzner_dns_helpers as helpers
 
 
 def record_create(hetzner_dns_token=None,
-                  name=None,
-                  ttl=None,
                   record_type=None,
+                  name=None,
                   value=None,
+                  ttl=None,
                   zone_id=None,
                   zone_name=None,
                   id_only=False):
@@ -35,9 +35,18 @@ def record_create(hetzner_dns_token=None,
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
+    if record_type is None:
+        # get record_type from environment variable
+        record_type = os.environ['RECORD_TYPE']\
+            if os.environ.get('RECORD_TYPE') else os.environ['TYPE']
+
     if name is None:
         # get name from environment variable
         name = os.environ['NAME']
+
+    if value is None:
+        # get value from environment variable
+        value = os.environ['VALUE']
 
     if ttl is None:
         if os.environ.get('TTL'):
@@ -46,15 +55,6 @@ def record_create(hetzner_dns_token=None,
         else:
             # use default value for TTL
             ttl = 86400
-
-    if record_type is None:
-        # get record_type from environment variable
-        record_type = os.environ['RECORD_TYPE']\
-            if os.environ.get('RECORD_TYPE') else os.environ['TYPE']
-
-    if value is None:
-        # get value from environment variable
-        value = os.environ['VALUE']
 
     if zone_name is None and os.environ.get('ZONE_NAME'):
         # get ttl from environment variable
