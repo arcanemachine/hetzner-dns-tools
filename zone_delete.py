@@ -37,7 +37,7 @@ def zone_delete(hetzner_dns_token=None, zone_id=None, zone_name=None):
     if os.environ.get('ZONE_ID'):
         zone_id = os.environ['ZONE_ID']
 
-    # if (domain) name exists, use it to obtain the zone
+    # if zone_name exists, use it to obtain zone (skip if zone_id exists)
     if zone_name and not zone_id:
         from zone_list import zone_list
 

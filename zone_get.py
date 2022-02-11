@@ -49,7 +49,7 @@ def zone_get(
 
     zone = None
 
-    # if zone_name exists, use it to obtain the zone
+    # if zone_name exists, use it to obtain the zone (skip if zone_id exists)
     if (zone_name or 'ZONE_NAME' in os.environ) and zone_id is None:
 
         # get list of zones
