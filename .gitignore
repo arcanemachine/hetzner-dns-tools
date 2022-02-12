@@ -1,5 +1,6 @@
 # temp files
 *.env
+*.envrc
 *.sw?
 *.pyc
 *.pyo
