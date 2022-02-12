@@ -5,7 +5,8 @@ import os
 import sys
 import requests
 
-import hetzner_dns_helpers as helpers
+from . import hetzner_dns_helpers as helpers
+from .zone_get import zone_get
 
 
 def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
@@ -49,7 +50,6 @@ def record_list(hetzner_dns_token=None, zone_id=None, zone_name=None):
 
     # if zone_name exists, use it to obtain zone (skip if zone_id exists)
     if (zone_name or 'ZONE_NAME' in os.environ) and not zone_id:
-        from zone_get import zone_get
 
         try:
             # get the desired zone

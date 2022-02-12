@@ -5,7 +5,8 @@ import os
 import sys
 import requests
 
-import hetzner_dns_helpers as helpers
+from . import hetzner_dns_helpers as helpers
+from .zone_list import zone_list
 
 
 def zone_delete(hetzner_dns_token=None,
@@ -54,7 +55,6 @@ def zone_delete(hetzner_dns_token=None,
 
     # if zone_name exists, use it to obtain zone (skip if zone_id exists)
     if zone_name and not zone_id:
-        from zone_list import zone_list
 
         # get list of zones
         response_dict = zone_list()

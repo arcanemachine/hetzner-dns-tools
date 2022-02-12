@@ -43,6 +43,7 @@ function usage () {
 # save required args (noun and action) for later
 noun=$1
 action=$2
+help=$3
 
 # required args
 case $noun in
@@ -51,33 +52,33 @@ case $noun in
       list)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/zone_list.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_list
         else
-          python3 $dir_path/zone_list.py
+          python3 -m hetzner_dns_cli.zone_list
         fi
         ;;
       create)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/zone_create.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_create
         else
-          python3 $dir_path/zone_create.py
+          python3 -m hetzner_dns_cli.zone_create
         fi
         ;;
       get)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/zone_get.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_get
         else
-          python3 $dir_path/zone_get.py
+          python3 -m hetzner_dns_cli.zone_get
         fi
         ;;
       delete)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/zone_delete.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_delete
         else
-          python3 $dir_path/zone_delete.py
+          python3 -m hetzner_dns_cli.zone_delete
         fi
         ;;
       *)
@@ -90,33 +91,33 @@ case $noun in
       list)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/record_list.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_list
         else
-          python3 $dir_path/record_list.py
+          python3 -m hetzner_dns_cli.record_list
         fi
         ;;
       create)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/record_create.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_create
         else
-          python3 $dir_path/record_create.py
+          python3 -m hetzner_dns_cli.record_create
         fi
         ;;
       get)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/record_get.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_get
         else
-          python3 $dir_path/record_get.py
+          python3 -m hetzner_dns_cli.record_get
         fi
         ;;
       delete)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 $dir_path/record_delete.py
+          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_delete
         else
-          python3 $dir_path/record_delete.py
+          python3 -m hetzner_dns_cli.record_delete
         fi
         ;;
       *)

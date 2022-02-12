@@ -1,3 +1,12 @@
+# temp files
 *.env
 *.sw?
 *.pyc
+*.pyo
+__pycache__/
+
+# build files
+dist/
+build
+.pypirc
+*.egg-info/

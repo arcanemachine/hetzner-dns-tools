@@ -5,10 +5,9 @@ import os
 import requests
 import sys
 
-import hetzner_dns_helpers as helpers
-
-from record_list import record_list
-from zone_get import zone_get
+from . import hetzner_dns_helpers as helpers
+from .record_list import record_list
+from .zone_get import zone_get
 
 
 def record_get(hetzner_dns_token=None,

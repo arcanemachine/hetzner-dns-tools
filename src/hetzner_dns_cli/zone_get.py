@@ -7,20 +7,24 @@ import sys
 
 import hetzner_dns_helpers as helpers
 
-from zone_list import zone_list
+from .zone_list import zone_list
 
 
-def zone_get(
-        hetzner_dns_token=None, zone_id=None, zone_name=None, id_only=False):
+def zone_get(hetzner_dns_token=None,
+             zone_id=None,
+             name=None,
+             zone_name=None,
+             id_only=False):
     """
     Get info about an existing zone.
     https://dns.hetzner.com/api-docs/#operation/GetZone
 
-    Required Parameters: One of: `zone_id` or `zone_name`
+    Required Parameters: One of: `zone_id` or `name/zone_name`
+      - `name` and `zone_name` are interchangeable in all zone functions
     Optional Parameters: `id_only`
 
 
-    - Lookups can be performed using 'zone_name' or 'zone_id'.
+    - Lookups can be performed using 'zone_id' or 'name/zone_name'.
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
@@ -29,8 +33,9 @@ def zone_get(
     - If 'zone_id' passed in args or as environment variable (ZONE_ID),
       then use it to acquire the desired zone.
 
-    - If (domain) 'zone_name' passed in args or as environment variable
-      (NAME), then use it to acquire the desired zone.
+    - If (domain) 'name/zone_name' passed in args or as environment
+      variable (NAME or ZONE_NAME), then use it to acquire the desired
+      zone.
 
     - If 'id_only' passed in args or as environment variable (ID_ONLY),
       return just the zone ID if one exists.
@@ -48,9 +53,11 @@ def zone_get(
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
 
-    if zone_name is None and os.environ.get('ZONE_NAME'):
-        # get zone_name from environment variable
-        zone_name = os.environ['ZONE_NAME']
+    if (name is None and os.environ.get('NAME'))\
+            or (zone_name is None and os.environ.get('ZONE_NAME')):
+        # get name/zone_name from environment variable
+        zone_name = os.environ['ZONE_NAME']\
+            if os.environ.get('ZONE_NAME') else os.environ.get('NAME')
 
     if not id_only and os.environ.get('ID_ONLY'):
         # get id_only from environment variable

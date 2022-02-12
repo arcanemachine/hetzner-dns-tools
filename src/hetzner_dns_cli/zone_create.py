@@ -5,7 +5,7 @@ import os
 import sys
 import requests
 
-import hetzner_dns_helpers as helpers
+from . import hetzner_dns_helpers as helpers
 
 
 def zone_create(hetzner_dns_token=None,
@@ -18,7 +18,7 @@ def zone_create(hetzner_dns_token=None,
     https://dns.hetzner.com/api-docs/#operation/CreateZone
 
     Required Parameters: `name/zone_name`
-      - `name` and `zone_name` are interchangeable in this function
+      - `name` and `zone_name` are interchangeable in all zone functions
     Optional Parameters: `ttl`
 
 

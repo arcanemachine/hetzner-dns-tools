@@ -4,9 +4,8 @@ import json
 import os
 import requests
 
-from record_get import record_get
-
-import hetzner_dns_helpers as helpers
+from . import hetzner_dns_helpers as helpers
+from .record_get import record_get
 
 
 def delete_record_by_id(hetzner_dns_token, record_id):

@@ -103,8 +103,6 @@ This method requires you to have `npm` installed:
   - Pipe the output of a command to the newly-installed `json` package:
     - `hetzner-dns-cli zone listjson`
 
-If you know of a better method (particularly one that doesn't require `npm` to be installed), please [submit a ticket](https://github.com/arcanemachine/hetzner-dns-cli/issues/new).
-
 
 ### In Python
 
