@@ -36,6 +36,16 @@ All examples in this README assume you are in the root directory of this project
 
 Basic usage example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-tools zone list` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
 
+### Setup In Docker
+
+- Install [Docker Engine](https://docs.docker.com/engine/install/).
+- Clone the `hetzner-dns-tools` repo: `git clone https://github.com/arcanemachine/hetzner-dns-tools`
+- Navigate to the root folder of the project.
+- Enter the shell:
+  - Bash: `sudo docker run --name hetzner-dns-tools --user user -it arcanemachine/hetzner-dns-tools bash`
+  - Python: `sudo docker run --name hetzner-dns-tools --user user -it arcanemachine/hetzner-dns-tools`
+- When you are finished, you can destroy the container with `docker rm hetzner-dns-tools`.
+
 **Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
 
 ## Setting parameters
@@ -83,7 +93,6 @@ your_zone_id = dns_zones[0]['id']
 
 print(your_zone_id)
 ```
-
 
 ## Project Structure
 
