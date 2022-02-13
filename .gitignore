@@ -11,3 +11,6 @@ dist/
 build
 .pypirc
 *.egg-info/
+
+# misc
+Session.vim  # vim session file
