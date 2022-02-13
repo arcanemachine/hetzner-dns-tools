@@ -16,27 +16,27 @@ dir_path=$(get_script_dir)
 
 
 function usage () {
-  echo "hetzner-dns-cli"
-  echo "Usage:  hetzner-dns-cli [zone|record] [action] [ OPTIONS ]"
+  echo "hetzner-dns-tools"
+  echo "Usage:  hetzner-dns-tools [zone|record] [action] [ OPTIONS ]"
   echo ""
   echo "Actions: list create get delete"
   echo ""
   echo "Examples:"
-  echo "  - hetzner-dns-cli zone list"
-  echo "  - hetzner-dns-cli record list"
+  echo "  - hetzner-dns-tools zone list"
+  echo "  - hetzner-dns-tools record list"
   echo ""
   echo "Setting parameters for requests:"
   echo "  - Using command line flags"
-  echo "    - hetzner-dns-cli zone create --name your-domain.com"
-  echo "    - hetzner-dns-cli record get --zone-id your-zone-id --first-record-only"
+  echo "    - hetzner-dns-tools zone create --name your-domain.com"
+  echo "    - hetzner-dns-tools record get --zone-id your-zone-id --first-record-only"
   echo "  - Using environment variables:"
-  echo "    - NAME=your-domain.com hetzner-dns-cli zone create"
-  echo "    - ZONE_ID=your-zone-id FIRST_RECORD_ONLY=1 hetzner-dns-cli zone get"
+  echo "    - NAME=your-domain.com hetzner-dns-tools zone create"
+  echo "    - ZONE_ID=your-zone-id FIRST_RECORD_ONLY=1 hetzner-dns-tools zone get"
   echo ""
   echo "Type '--help' after any action to view the help file for that action."
-  echo "  - e.g. hetzner-dns-cli zone get --help"
+  echo "  - e.g. hetzner-dns-tools zone get --help"
   echo ""
-  echo "Typing any invalid hetzner-dns-cli command will display this help file."
+  echo "Typing any invalid hetzner-dns-tools command will display this help file."
   echo ""
 }
 
@@ -52,33 +52,33 @@ case $noun in
       list)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_list
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_list
         else
-          python3 -m hetzner_dns_cli.zone_list
+          python3 -m hetzner_dns_tools.zone_list
         fi
         ;;
       create)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_create
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_create
         else
-          python3 -m hetzner_dns_cli.zone_create
+          python3 -m hetzner_dns_tools.zone_create
         fi
         ;;
       get)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_get
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_get
         else
-          python3 -m hetzner_dns_cli.zone_get
+          python3 -m hetzner_dns_tools.zone_get
         fi
         ;;
       delete)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.zone_delete
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_delete
         else
-          python3 -m hetzner_dns_cli.zone_delete
+          python3 -m hetzner_dns_tools.zone_delete
         fi
         ;;
       *)
@@ -91,33 +91,33 @@ case $noun in
       list)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_list
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.record_list
         else
-          python3 -m hetzner_dns_cli.record_list
+          python3 -m hetzner_dns_tools.record_list
         fi
         ;;
       create)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_create
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.record_create
         else
-          python3 -m hetzner_dns_cli.record_create
+          python3 -m hetzner_dns_tools.record_create
         fi
         ;;
       get)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_get
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.record_get
         else
-          python3 -m hetzner_dns_cli.record_get
+          python3 -m hetzner_dns_tools.record_get
         fi
         ;;
       delete)
         if [ "$help" == "help" ]
         then
-          SHOW_HELP=1 python3 -m hetzner_dns_cli.record_delete
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.record_delete
         else
-          python3 -m hetzner_dns_cli.record_delete
+          python3 -m hetzner_dns_tools.record_delete
         fi
         ;;
       *)
