@@ -36,19 +36,18 @@ All examples in this README assume you are in the root directory of this project
 
 Basic usage example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-tools zone list` (Note: To prevent sensitive data from being saved in your Bash history, ensure that this command begins with a space, or set the [environment variable somewhere else](#setting-environment-variables).
 
-### Setup In Docker
+### Run In Docker
 
 - Install [Docker Engine](https://docs.docker.com/engine/install/).
-- Clone the `hetzner-dns-tools` repo: `git clone https://github.com/arcanemachine/hetzner-dns-tools`
-- Navigate to the root folder of the project.
-- Enter the shell:
-  - Bash: `sudo docker run --name hetzner-dns-tools --user user -it arcanemachine/hetzner-dns-tools bash`
-  - Python: `sudo docker run --name hetzner-dns-tools --user user -it arcanemachine/hetzner-dns-tools`
-- When you are finished, you can destroy the container with `docker rm hetzner-dns-tools`.
+- Start the container and view the logs while the project builds: `docker run --name hetzner-dns-tools -dt arcanemachine/hetzner-dns-tools && docker logs -f hetzner-dns-tools`
+- After the project finishes building, press `Ctrl + C` to exit the logs, and open a bash shell in the same container: `docker exec -it hetzner-dns-tools bash`
+  - You can do this before the build completes. However, `hetzner-dns-tools` will not be available from the command line until the build is complete.
+- From this shell, you can run `hetzner-dns-tools` or open `python3` and `import hetzner_dns_tools` and be on your merry way.
+- When you are finished, you can stop and destroy the container with `docker stop -t 1 hetzner-dns-tools` and `docker rm hetzner-dns-tools`.
 
 **Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
 
-## Setting parameters
+## Setting Parameters
 
 There are two methods of setting parameters using this library:
   - Bash environment variables

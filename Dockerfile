@@ -8,27 +8,38 @@ ENV PYTHONUNBUFFERED=1
 ARG USERNAME=user
 RUN useradd --create-home --shell /bin/bash --no-log-init $USERNAME
 
-# install git
+
+### INSTALL DEPENDENCIES ###
+
+# git
 RUN apt-get update && apt-get install git -y
 
-# install python build tools
+# python build tools
 RUN python3 -m pip install build
+
+
+### SETUP ENVIRONMENT ###
 
 # use non-root user
 USER $USERNAME
 
-# ensure ~/.local/bin exists in PATH
-RUN mkdir -p /home/user/.local/bin
-ENV PATH="${PATH}:/home/user/.local/bin"
-
-ARG REPO_FOLDER=/home/user/hetzner-dns-tools
-
-# clone the repo
-RUN git clone https://github.com/arcanemachine/hetzner-dns-tools $REPO_FOLDER
-
-# work in the directory that contains the repo
+# create and work in the directory that will contain the repo
+ENV REPO_FOLDER=/home/user/hetzner-dns-tools
+RUN mkdir -p $REPO_FOLDER
 WORKDIR $REPO_FOLDER
 
-# build and install hetzner-dns-tools
-RUN python3 -m build
-RUN python3 -m pip install .
+# ensure ~/.local/bin exists in PATH
+ARG LOCAL_BIN_FOLDER=/home/user/.local/bin
+RUN mkdir -p $LOCAL_BIN_FOLDER
+ENV PATH="${PATH}:$LOCAL_BIN_FOLDER"
+
+
+### COMMANDS ###
+
+# clone the repo
+ENV REPO_URL="https://github.com/arcanemachine/hetzner-dns-tools"
+ENV REPO_FOLDER="$REPO_FOLDER"
+ENTRYPOINT git clone $REPO_URL $REPO_FOLDER\
+    && python3 -m build\
+    && python3 -m pip install .\
+    && tail -f /dev/null
