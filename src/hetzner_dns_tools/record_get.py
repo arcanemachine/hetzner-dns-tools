@@ -168,11 +168,12 @@ def record_get(hetzner_dns_token=None,
 
     # ensure that one or more optional parameters exist before doing
     # an indirect lookup
-    if not record_id and not allow_multiple_records and not first_record_only\
+    if not record_id and not search_all_zones and not zone_name\
             and not name and not ttl and not record_type and not value:
         error_message =\
             "You must provide a record_id or one or more of the following: "\
-            "name, ttl, record_type (environment variable: TYPE), or value."
+            "name, ttl, record_type (environment variable: TYPE), or value, "\
+            "*OR* you must set a truthy value for 'search_all_zones.'"
         helpers.exit_with_error(error_message)
 
     # if zone_name passed, lookup the zone that matches it to get zone_id
