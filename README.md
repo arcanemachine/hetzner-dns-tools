@@ -40,9 +40,9 @@ Basic usage example: ` HETZNER_DNS_TOKEN=your-hetzner-dns-token hetzner-dns-tool
 
 - Install [Docker Engine](https://docs.docker.com/engine/install/).
 - Start the container and view the logs while the project builds: `docker run --name hetzner-dns-tools -dt arcanemachine/hetzner-dns-tools && docker logs -f hetzner-dns-tools`
-- After the project finishes building, press `Ctrl + C` to exit the logs, and open a bash shell in the same container: `docker exec -it hetzner-dns-tools bash`
-  - You can do this before the build completes. However, `hetzner-dns-tools` will not be available from the command line until the build is complete.
-- From this shell, you can run `hetzner-dns-tools` or open `python3` and `import hetzner_dns_tools` and be on your merry way.
+- After the project finishes building\* press `Ctrl + C` to exit the logs, and open a bash shell in the same container: `docker exec -it hetzner-dns-tools bash`
+  - \*You can exit the logs before the build completes. However, `hetzner-dns-tools` will not be available from the command line until the build is complete.
+- From this shell, you can run `hetzner-dns-tools` or open `python3` and `import hetzner_dns_tools`.
 - When you are finished, you can stop and destroy the container with `docker stop -t 1 hetzner-dns-tools` and `docker rm hetzner-dns-tools`.
 
 **Note:** This library allows indirect lookups to be performed by domain name or other parameters, which will result in multiple requests being issued. To decrease the run time, use zone IDs and record IDs whenever possible.
