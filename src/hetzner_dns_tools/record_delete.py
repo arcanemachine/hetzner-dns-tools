@@ -129,16 +129,17 @@ def record_delete(hetzner_dns_token=None,
 
         # this method will return a string if one record is returned,
         # and a list if multiple records are returned
-        record_get_id_result = record_get(zone_id=zone_id,
-                                          zone_name=zone_name,
-                                          name=name,
-                                          ttl=ttl,
-                                          record_type=record_type,
-                                          value=value,
-                                          id_only=True,
-                                          first_record_only=first_record_only,
-                                          allow_multiple_records=True,
-                                          search_all_zones=search_all_zones)
+        record_get_id_result =\
+            record_get(zone_id=zone_id,
+                       zone_name=zone_name,
+                       name=name,
+                       ttl=ttl,
+                       record_type=record_type,
+                       value=value,
+                       id_only=True,
+                       first_record_only=first_record_only,
+                       allow_multiple_records=delete_multiple_records,
+                       search_all_zones=search_all_zones)
 
         if type(record_get_id_result) == list:
             records_count = len(record_get_id_result)
@@ -147,7 +148,10 @@ def record_delete(hetzner_dns_token=None,
             if not delete_multiple_records:
                 error_message = f"Found {records_count} records. To "\
                     "delete multiple records via a query, assign a truthy "\
-                    "value to 'delete_multiple_records'"
+                    "value to 'delete_multiple_records', or use "\
+                    "'first_record_only' to get only the "\
+                    "first record. Capitalize these values if using "\
+                    "environment variables."
                 helpers.exit_with_error(error_message)
 
             else:

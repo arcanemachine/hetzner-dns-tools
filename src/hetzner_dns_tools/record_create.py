@@ -88,7 +88,7 @@ def record_create(hetzner_dns_token=None,
         if zone_id is None:
             helpers.exit_with_error("zone not found")
 
-    if not zone_name and not zone_id:
+    if not zone_name and not zone_id and not os.environ.get('ZONE_ID'):
         # if neither zone_name or zone_id exist, then exit with error
         helpers.exit_with_error("Must include one of: zone_id, zone_name")
     if zone_id is None:
