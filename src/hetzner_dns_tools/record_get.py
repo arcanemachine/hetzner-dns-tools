@@ -168,7 +168,7 @@ def record_get(hetzner_dns_token=None,
 
     # ensure that one or more optional parameters exist before doing
     # an indirect lookup
-    if not record_id\
+    if not record_id and not allow_multiple_records and not first_record_only\
             and not name and not ttl and not record_type and not value:
         error_message =\
             "You must provide a record_id or one or more of the following: "\
