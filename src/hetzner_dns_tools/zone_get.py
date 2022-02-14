@@ -5,7 +5,7 @@ import os
 import requests
 import sys
 
-import hetzner_dns_helpers as helpers
+from . import hetzner_dns_helpers as helpers
 
 from .zone_list import zone_list
 
