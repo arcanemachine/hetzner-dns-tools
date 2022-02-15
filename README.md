@@ -407,6 +407,7 @@ print(records)
 > **Required Parameters:** `hetzner_dns_token`, `record_type`, `value`, `zone_id`
 
 > Optional Parameters: `zone_name`, `name`\*, `ttl`, `id_only`\
+>\
 >**\*If `name` is not specified, the root value `@` will be used (except for MX records).**
 
 To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
@@ -496,9 +497,9 @@ new_record = record_create(hetzner_dns_token='your-token',
 > Optional Parameters:\
 > &emsp;Filters: `record_type`, `name`, `value`, `ttl`\
 > &emsp;Formats: `id_only`\
-> &emsp;Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*
-
-\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
+> &emsp;Options: `first_record_only`, `allow_multiple_records`, `search_all_zones`\*\
+>\
+>**\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.**
 
 **Note:** This function will raise an exception if multiple records are returned, \*unless\* the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
 
