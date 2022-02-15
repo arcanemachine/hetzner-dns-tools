@@ -17,7 +17,7 @@ dir_path=$(get_script_dir)
 
 function usage () {
   echo "hetzner-dns-tools"
-  echo "Usage:  hetzner-dns-tools [zone|record] [action] [ OPTIONS ]"
+  echo "Usage:  hetzner-dns-tools [zone|record] [action] [ -h | --help ]"
   echo ""
   echo "Actions: list create get delete"
   echo ""
@@ -40,6 +40,14 @@ function usage () {
   echo ""
 }
 
+function invalid_arg_exit () {
+  echo "Invalid argument: '$3'"
+  echo ""
+  echo "To view the help files for this function, run: 'hetzner-dns-tools $noun $action --help'"
+  echo ""
+  echo "To view generic instructions for hetzner-dns-cli, run: 'hetzner-dns-tools --help'"
+}
+
 # save required args (noun and action) for later
 noun=$1
 action=$2
@@ -50,35 +58,41 @@ case $noun in
   zone)
     case $action in
       list)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_list
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.zone_list
         else
-          invalid_arg_exit
+          invalid_argument_exit
         fi
         ;;
       create)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_create
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.zone_create
         fi
         ;;
       get)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_get
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.zone_get
         fi
         ;;
       delete)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.zone_delete
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.zone_delete
         fi
         ;;
       *)
@@ -89,35 +103,39 @@ case $noun in
   record)
     case $action in
       list)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.record_list
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.record_list
         fi
         ;;
       create)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.record_create
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.record_create
         fi
         ;;
       get)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.record_get
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.record_get
         fi
         ;;
       delete)
-        if [ "$help" != "" ]
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
         then
           SHOW_HELP=1 python3 -m hetzner_dns_tools.record_delete
-        else
-          invalid_arg_exit
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.record_delete
         fi
         ;;
       *)
