@@ -638,14 +638,16 @@ As with the `zone` modules, you can use `record_delete` and `record_create` to u
 > **Required\* Parameters:** One of: `record_id` or `zone_id` or `zone_name`
 
 > Optional Parameters:\
->   &emsp;Filters: `record_type`, `name`, `value`, `ttl`\
->   &emsp;Options: `delete_multiple_records`, `first_record_only`, `search_all_zones`\*
+>   &emsp;Filters: `record_type`, `name`, `value` (but not `ttl`\*)\
+>   &emsp;Options: `delete_multiple_records`, `first_record_only`, `search_all_zones`\**
 
 Records can be deleted directly using a `record_id`, or can be done indirectly by using any of the *Optional Parameters* as a lookup.
 
 Successful delete operations will return the string 'OK', and unsuccessful delete operations will raise a `ValueError` exception.
 
-\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
+\*Due to how `record_list` returns its results, `ttl` is not an available option for filtering records
+
+\*\*If the `search_all_zones` parameter is given a truthy value, then you do not need to include any of the *Required Parameters*, as their purpose is to ensure that records are only returned for a single zone.
 
 **Note:** This function will raise an exception if multiple records are returned, \*unless\* the `first_record_only` \*or\* `allow_multiple_records` parameters are truthy.
 
@@ -669,7 +671,7 @@ To delete all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=you
 
 To delete all CNAME records from all zones: `TYPE=CNAME SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 hetzner-dns-tools record delete`
 
-To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 hetzner-dns-tools record delete`
+To delete the first returned A record with a value of `1.2.3.4` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 FIRST_RECORD_ONLY=1 hetzner-dns-tools record delete`
 
 
 ## In Python
@@ -717,7 +719,7 @@ record_delete(hetzner_dns_token='your-token',
               search_all_zones=True)
 ```
 
-To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup:
+To delete the first returned A record with a value of `1.2.3.4` by using a zone (ie. domain) name as a lookup:
 
 ```
 from hetzner_dns_tools.record_delete import record_delete
@@ -727,7 +729,6 @@ record_delete(hetzner_dns_token='your-token',
               zone_name='your-domain.com',
               record_type='A',
               value='1.2.3.4',
-              ttl=57600,
               first_record_only=True)
 ```
 \

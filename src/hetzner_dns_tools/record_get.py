@@ -17,7 +17,6 @@ def record_get(hetzner_dns_token=None,
                record_type=None,
                name=None,
                value=None,
-               ttl=None,
                first_record_only=False,
                allow_multiple_records=False,
                search_all_zones=False,
@@ -29,7 +28,7 @@ def record_get(hetzner_dns_token=None,
     Required* Parameters: One of: `record_id` or `zone_id` or `zone_name`
 
     Optional Parameters:
-      Filters: record_type, name, value, ttl,
+      Filters: record_type, name, value
       Formats: id_only
       Options: first_record_only, allow_multiple_records, search_all_zones
 
@@ -39,8 +38,10 @@ def record_get(hetzner_dns_token=None,
       `allow_multiple_records` parameters are truthy.
 
     - Lookups can be performed directly with 'record_id', or indirectly
-      using a combination of 'name', 'ttl', 'record_type', 'value',
-      'zone_id', and 'zone_name'.
+      using a combination of 'name', 'record_type', 'value', 'zone_id',
+      and 'zone_name'.
+        - Due to how record_list is structured, 'ttl' is not an
+          available filter.
 
     - If doing an indirect lookup, you must either specify a 'zone_id' or
       'zone_name', or assign a truthy value to 'search_all_zones'.
@@ -131,10 +132,6 @@ def record_get(hetzner_dns_token=None,
         # get value from environment variable
         value = os.environ['VALUE']
 
-    if ttl is None and os.environ.get('TTL'):
-        # get ttl from environment variable
-        ttl = int(os.environ['TTL'])
-
     if not first_record_only\
             and os.environ.get('FIRST_RECORD_ONLY'):
         # get first_record_only from environment variable
@@ -169,10 +166,10 @@ def record_get(hetzner_dns_token=None,
     # ensure that one or more optional parameters exist before doing
     # an indirect lookup
     if not record_id and not search_all_zones and not zone_name\
-            and not name and not ttl and not record_type and not value:
+            and not name and not record_type and not value:
         error_message =\
             "You must provide a record_id or one or more of the following: "\
-            "name, ttl, record_type (environment variable: TYPE), or value, "\
+            "name, record_type (environment variable: TYPE), or value, "\
             "*OR* you must set a truthy value for 'search_all_zones.'"
         helpers.exit_with_error(error_message)
 
@@ -198,8 +195,7 @@ def record_get(hetzner_dns_token=None,
 
     # iterate over the given parameters, adding any matching records that
     # are not yet in the list
-    if (zone_id or zone_name) and\
-            (not name and not ttl and not record_type and not value):
+    if (zone_id or zone_name) and (not name and not record_type and not value):
         filtered_records = records
     else:
         filtered_records = []
@@ -207,8 +203,6 @@ def record_get(hetzner_dns_token=None,
             # if record does not meet any one qualifying criterion,
             # then skip over it and continue the loop
             if name and record['name'] != name:
-                continue
-            if ttl and record['ttl'] != ttl:
                 continue
             if record_type and record['type'] != record_type:
                 continue

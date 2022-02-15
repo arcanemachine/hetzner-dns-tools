@@ -36,7 +36,6 @@ def record_delete(hetzner_dns_token=None,
                   zone_id=None,
                   zone_name=None,
                   name=None,
-                  ttl=None,
                   record_type=None,
                   value=None,
                   first_record_only=None,
@@ -49,7 +48,7 @@ def record_delete(hetzner_dns_token=None,
     Required* Parameters: One of: record_id or zone_id or zone_name
 
     Optional Parameters:
-      Filters: record_type, name, value, ttl,
+      Filters: record_type, name, value
       Options: delete_multiple_records, first_record_only, search_all_zones*
 
 
@@ -58,8 +57,8 @@ def record_delete(hetzner_dns_token=None,
       `delete_multiple_records` parameters are truthy.
 
     - Deletions can be performed directly with 'record_id', or indirectly
-      via a lookup that uses any combination of 'name', 'ttl',
-      'record_type', 'value', 'zone_id', and/or 'zone_name'.
+      via a lookup that uses any combination of 'name', 'record_type',
+      'value', 'zone_id', and/or 'zone_name'.
 
     - If doing a lookup, you must either specify a 'zone_id' or
       'zone_name', or assign a truthy value to 'search_all_zones'.
@@ -114,10 +113,6 @@ def record_delete(hetzner_dns_token=None,
             # get name from environment variable
             name = os.environ.get('NAME', None)
 
-        if ttl is None and os.environ.get('TTL'):
-            # get ttl from environment variable
-            ttl = int(os.environ['TTL'])
-
         if record_type is None and os.environ.get('TYPE'):
             # get record_type from environment variable
             record_type = os.environ['RECORD_TYPE']\
@@ -133,7 +128,6 @@ def record_delete(hetzner_dns_token=None,
             record_get(zone_id=zone_id,
                        zone_name=zone_name,
                        name=name,
-                       ttl=ttl,
                        record_type=record_type,
                        value=value,
                        id_only=True,
