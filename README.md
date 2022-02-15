@@ -6,7 +6,7 @@ This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzne
 
 To be specific, `hetzner-dns-tools` makes it easier to manage your zones/records by name instead of having to get the ID first (although you can do that as well). Also, it allows you to retrieve *only* the IDs if needed, without having to manually parse the JSON first.
 
-Limitations: `hetzner-dns-tools` does not currently do bulk operations (although it can delete records in build), and it does not work with query params (it would be easy to add if you are so inclined). Pull requests and forks are welcomed! :)
+Limitations: `hetzner-dns-tools` does not currently do bulk operations other than bulk record deletion, and it does not work with query params (it would be easy to add if you are so inclined). Pull requests and forks are welcomed! :)
 
 These tools are made with Python and are designed to be used in Bash or Python.
 
