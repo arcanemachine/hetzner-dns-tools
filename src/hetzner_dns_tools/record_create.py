@@ -27,11 +27,12 @@ def record_create(hetzner_dns_token=None,
     Optional Parameters:
       - `zone_name`, `name`, `ttl`, `id_only`
 
+
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    * If name is not passed, then '@' will be used (for non-MX records)
+    * If name is not passed, then '@' will be used.
 
     * MX records must be given a priority and server using the
       'value' field.

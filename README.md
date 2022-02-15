@@ -661,7 +661,7 @@ These parameters can be given truthy values to enable them:
 
 ### In Bash
 
-To delete a record by using the record ID: `RECORD_ID='your-record-id' hetzner-dns-tools record delete`
+To delete a record by using its record ID: `RECORD_ID='your-record-id' hetzner-dns-tools record delete`
 
 To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www hetzner-dns-tools record delete`
 
