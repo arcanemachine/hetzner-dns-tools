@@ -22,6 +22,16 @@ All examples in this README assume you are in the root directory of this project
 - [Project Structure](#project-structure)
 - [Converting Results to Human-Readable Output](#converting-results-to-human-readable-output)
 - [Usage Guide](#usage-guide)
+  - [Zones](#zones)
+    - [zone_list](#zone_list)
+    - [zone_create](#zone_create)
+    - [zone_get](#zone_get)
+    - [zone_delete](#zone_delete)
+  - [Records](#records)
+    - [record_list](#record_list)
+    - [record_create](#record_create)
+    - [record_get](#record_get)
+    - [record_delete](#record_delete)
 
 ## Setup
 
@@ -137,13 +147,13 @@ print(readable_dns_zones)
 
 ## Usage Guide
 
-#### Zones
+#### Zone Functions
 - [zone_list](#zone_list)
 - [zone_create](#zone_create)
 - [zone_get](#zone_get)
 - [zone_delete](#zone_delete)
 
-#### Records
+#### Record Functions
 - [record_list](#record_list)
 - [record_create](#record_create)
 - [record_get](#record_get)
