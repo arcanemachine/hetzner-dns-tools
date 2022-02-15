@@ -612,7 +612,7 @@ record_ids = record_get(hetzner_dns_token='your-token',
                         allow_multiple_records=True)
 ```
 
-To return the first record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup:
+To return the first record with a value of `1.2.3.4` by using a zone (ie. domain) name as a lookup:
 
 ```
 from hetzner_dns_tools.record_get import record_get
@@ -621,7 +621,6 @@ from hetzner_dns_tools.record_get import record_get
 record_ids = record_get(hetzner_dns_token='your-token',
                         zone_name='your-domain.com',
                         value='1.2.3.4',
-                        ttle=57600,
                         first_record_only=True)
 ```
 
@@ -716,7 +715,8 @@ from hetzner_dns_tools.record_delete import record_delete
 record_delete(hetzner_dns_token='your-token',
               record_type='A',
               name='@',
-              search_all_zones=True)
+              search_all_zones=True,
+              delete_multiple_records=True)
 ```
 
 To delete the first returned A record with a value of `1.2.3.4` by using a zone (ie. domain) name as a lookup:
