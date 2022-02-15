@@ -1,5 +1,7 @@
 # hetzner-dns-tools
 
+### "A simple Hetzner DNS API client for Python and Bash."
+
 This library makes it easier to work with Hetzner's [DNS API](https://dns.hetzner.com/api-docs/), namely Zones and Records.
 
 #### **Project Status: All basic CRUD functionality is complete. Tests still need to be written. Bulk record CREATE options not (yet) supported.**
