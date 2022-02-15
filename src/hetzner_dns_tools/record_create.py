@@ -22,22 +22,24 @@ def record_create(hetzner_dns_token=None,
     https://dns.hetzner.com/api-docs/#operation/CreateRecord
 
     Required Parameters:
-      - `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
+      - `hetzner_dns_token`, `name` (for non-MX records), `record_type`,
+        `value`, `zone_id`
 
     Optional Parameters:
       - `zone_name`, `ttl`, `id_only`
-
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    * name *MUST* passed in args or as environment variable (NAME).
-      It is used to set the name of the new record (e.g. 'www').
+    * name *MUST* be passed for non-MX records.
+
+    * MX records must be given a priority using the 'value' field.
+        - e.g. '10 your-domain.com'
 
     - If using Bash environment variables, ensure that values are assigned
       in ALL_CAPS.
-          - e.g. zone_id in Python -> ZONE_ID in environment variable
+        - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
     if hetzner_dns_token is None:
         # get token from environment variable
@@ -50,7 +52,8 @@ def record_create(hetzner_dns_token=None,
 
     if name is None:
         # get name from environment variable
-        name = os.environ['NAME']
+        if record_type != 'MX':
+            name = os.environ['NAME']
 
     if value is None:
         # get value from environment variable
@@ -96,11 +99,13 @@ def record_create(hetzner_dns_token=None,
         zone_id = os.environ['ZONE_ID']
 
     try:
-        params = {'name': name,
-                  'ttl': ttl,
+        params = {'ttl': ttl,
                   'type': record_type,
                   'value': value,
                   'zone_id': zone_id}
+        if name:
+            params['name'] = name
+
         response = requests.post(url='https://dns.hetzner.com/api/v1/records',
                                  headers={'Content-Type': 'application/json',
                                           'Auth-API-Token': hetzner_dns_token},
