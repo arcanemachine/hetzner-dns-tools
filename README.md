@@ -661,13 +661,13 @@ These parameters can be given truthy values to enable them:
 
 ### In Bash
 
-To delete a record by using its record ID: `RECORD_ID='your-record-id' hetzner-dns-tools record delete`
+To delete a record by using its record ID: `RECORD_ID=your-record-id hetzner-dns-tools record delete`
 
 To delete a zone's A record with a name of 'www' by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A NAME=www hetzner-dns-tools record delete`
 
 To delete all MX records for a zone by using a zone ID as a lookup: `ZONE_ID=your-zone-id TYPE=MX DELETE_MULTIPLE_RECORDS=1 hetzner-dns-tools record delete`
 
-To delete all A records from all zones with a name of '@' (root): `TYPE=A NAME="@" SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 hetzner-dns-tools record delete`
+To delete all CNAME records from all zones: `TYPE=CNAME SEARCH_ALL_ZONES=1 DELETE_MULTIPLE_RECORDS=1 hetzner-dns-tools record delete`
 
 To delete the first returned A record with a value of `1.2.3.4` and a TTL of `57600` by using a zone (ie. domain) name as a lookup: `ZONE_NAME=your-domain.com TYPE=A VALUE=1.2.3.4 TTL=57600 FIRST_RECORD_ONLY=1 hetzner-dns-tools record delete`
 

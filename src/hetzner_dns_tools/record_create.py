@@ -58,7 +58,7 @@ def record_create(hetzner_dns_token=None,
 
     if name is None:
         # get name from environment variable
-        name = os.environ['NAME'] if os.environ.get('name') else '@'
+        name = os.environ['NAME'] if os.environ.get('NAME') else '@'
 
     if value is None:
         # get value from environment variable
