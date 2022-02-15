@@ -33,8 +33,14 @@ def record_create(hetzner_dns_token=None,
 
     * If name is not passed, then '@' will be used (for non-MX records)
 
-    * MX records must be given a priority using the 'value' field.
-        - e.g. '10 your-domain.com'
+    * MX records must be given a priority and server using the
+      'value' field.
+        - e.g. '10 your-domain.com'  # priority: 10, server: your-domain.com
+
+    * SRV records must be given a priority, weight, port and target using
+      the 'value' field.
+        - e.g. '1 2 3 your-domain.com' # priority: 1, weight: 2,
+                                       # port: 3, target: your-domain.com
 
     - If using Bash environment variables, ensure that values are assigned
       in ALL_CAPS.

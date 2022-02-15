@@ -404,9 +404,10 @@ print(records)
 
 *Create a new record.* ([Hetzner DNS API Docs - Create Record](https://dns.hetzner.com/api-docs/#operation/CreateRecord))
 
-> **Required Parameters:** `hetzner_dns_token`, `name`, `record_type`, `value`, `zone_id`
+> **Required Parameters:** `hetzner_dns_token`, `record_type`, `value`, `zone_id`
 
-> Optional Parameters: `zone_name`, `ttl`, `id_only`
+> Optional Parameters: `zone_name`, `name`\*, `ttl`, `id_only`\
+>**\*If `name` is not specified, the root value `@` will be used (except for MX records).**
 
 To get the ID of the zone you want to create the record in, you can use `zone_name` to do an indirect lookup an obtain the `zone_id`. Note that doing this will result in an additional request being made.
 
@@ -419,7 +420,11 @@ To create an `A` record for zone ID `your-zone-id` with name `www` and value `1.
 
 To return just the record ID after creating the record: `ZONE_ID=your-zone-id RECORD_TYPE=A NAME=www VALUE=1.1.1.1 ID_ONLY=1 hetzner-dns-tools record create`
 
-To create a new zone with a custom TTL (default is `86400`) and return all record data: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 TTL=57600 hetzner-dns-tools record create`
+To create a new record with a custom TTL (default is `86400`), use `TTL`: `ZONE_ID=your-zone-id TYPE=A NAME=www VALUE=1.1.1.1 TTL=57600 hetzner-dns-tools record create`
+
+To create a MX record with a target of `your-domain.com` and a priority of `10`, both values must be entered as such in the `VALUE` field: `ZONE_ID=your-zone-id TYPE=MX VALUE="10 your-mail-server.com" hetzner-dns-tools record create`
+
+To create a SRV record with a priority of `1`, a weight of `2`, at port `3` for a target `your-server.com`, all values must be entered in this order in the `VALUE` field:  `ZONE_ID=your-zone-id TYPE=SRV VALUE="1 2 3 your-server.com" hetzner-dns-tools record create`
 
 
 ### In Python
@@ -457,7 +462,7 @@ new_record_id = record_create(hetzner_dns_token='your-token',
 print(new_record_id)
 ```
 
-To create a new zone with a custom TTL (default is `86400`) and return all record data:
+To create a new MX record with server `your-mail-server.com` and priority `10`:
 
 ```
 from hetzner_dns_tools.record_create import record_create
@@ -465,13 +470,20 @@ from hetzner_dns_tools.record_create import record_create
 # create a new record and return all record data
 new_record = record_create(hetzner_dns_token='your-token',
                            zone_id='your-zone-id',
-                           record_type='A',
-                           name='www',
-                           value='1.1.1.1',
-                           ttl=57600)
+                           record_type='MX',
+                           value='10 your.mail-server.com')
+```
 
-# print the new record's 'ttl' value
-print(new_record['record']['ttl'])  # 57600
+To create a SRV record with a priority of `1`, a weight of `2`, at port `3` for a target `your-server.com`:
+
+```
+from hetzner_dns_tools.record_create import record_create
+
+# create a new record and return all record data
+new_record = record_create(hetzner_dns_token='your-token',
+                           zone_id='your-zone-id',
+                           record_type='SRV',
+                           value='1 2 3 your.server.com')
 ```
 
 
