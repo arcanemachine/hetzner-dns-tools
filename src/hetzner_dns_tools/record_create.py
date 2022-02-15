@@ -22,17 +22,16 @@ def record_create(hetzner_dns_token=None,
     https://dns.hetzner.com/api-docs/#operation/CreateRecord
 
     Required Parameters:
-      - `hetzner_dns_token`, `name` (for non-MX records), `record_type`,
-        `value`, `zone_id`
+      - `hetzner_dns_token`, `record_type`, `value`, `zone_id`
 
     Optional Parameters:
-      - `zone_name`, `ttl`, `id_only`
+      - `zone_name`, `name`, `ttl`, `id_only`
 
     * hetzner_dns_token *MUST* be passed in args or as environment
       variable (HETZNER_DNS_TOKEN). You can get a DNS API token
       here: https://dns.hetzner.com/settings/api-token
 
-    * name *MUST* be passed for non-MX records.
+    * If name is not passed, then '@' will be used (for non-MX records)
 
     * MX records must be given a priority using the 'value' field.
         - e.g. '10 your-domain.com'
@@ -52,8 +51,7 @@ def record_create(hetzner_dns_token=None,
 
     if name is None:
         # get name from environment variable
-        if record_type != 'MX':
-            name = os.environ['NAME']
+        name = os.environ['NAME'] if os.environ.get('name') else '@'
 
     if value is None:
         # get value from environment variable
