@@ -2,8 +2,8 @@
 
 import json
 import os
-import sys
 import requests
+import sys
 
 from . import hetzner_dns_helpers as helpers
 from .zone_list import zone_list
@@ -47,6 +47,11 @@ def record_create(hetzner_dns_token=None,
       in ALL_CAPS.
         - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
+    if os.environ.get('SHOW_HELP'):
+        # print the docstring and exit
+        print(record_create.__doc__)
+        sys.exit(0)
+
     if hetzner_dns_token is None:
         # get token from environment variable
         hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
