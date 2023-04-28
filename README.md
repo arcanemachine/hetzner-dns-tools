@@ -68,7 +68,7 @@ There are two methods of setting parameters using this library:
 - Python arguments
   - e.g. `zone_list(hetzner_dns_token='your-hetzner-token')`
 
-> \*If you are using this library via Bash, you may want to look into something like **[direnv](https://direnv.net/)** in order to prevent your DNS token from leaking into your `~/.bash history`.
+> \*If you are using this library via Bash, you may want to look into something like **[direnv](https://direnv.net/)** in order to prevent your DNS token from leaking into your `~/.bash_history`.
 
 Any arguments used when calling a Python function will override the values of any environment variables.
 
