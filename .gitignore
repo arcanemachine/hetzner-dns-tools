@@ -13,4 +13,5 @@ build
 *.egg-info/
 
 # misc
-Session.vim
+Session*.vim
+/venv/
