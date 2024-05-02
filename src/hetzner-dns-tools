@@ -19,7 +19,7 @@ function usage () {
   echo "hetzner-dns-tools"
   echo "Usage:  hetzner-dns-tools [zone|record] [action] [ -h | --help ]"
   echo ""
-  echo "Actions: list create get delete"
+  echo "Actions: list create get delete update"
   echo ""
   echo "Examples:"
   echo "  - hetzner-dns-tools zone list"
@@ -136,6 +136,15 @@ case $noun in
         elif [ "$help" == "" ]
         then
           python3 -m hetzner_dns_tools.record_delete
+        fi
+        ;;
+      update)
+        if [ "$help" == "-h" ] || [ "$help" == "--help" ]
+        then
+          SHOW_HELP=1 python3 -m hetzner_dns_tools.record_update
+        elif [ "$help" == "" ]
+        then
+          python3 -m hetzner_dns_tools.record_update
         fi
         ;;
       *)
