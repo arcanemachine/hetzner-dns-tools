@@ -128,23 +128,29 @@ def record_update(hetzner_dns_token=None,
         # check response for errors
         helpers.check_response_for_errors(response_dict)
 
-        # check for matching zone
+        # check for matching record in zone
         dns_records = response_dict['records']
+        record_id_count = 0
         for record in dns_records:
-            if record['name'] == name:
+            if record['name'] == name and record['type'] == record_type:
                 record_id = record['id']
-                break
+                record_id_count += 1
 
         # if no matching name found, then exit with error
         if record_id is None:
             helpers.exit_with_error("name not found in records")
 
-    if not name and not record_id and not os.environ.get('RECORD_ID'):
-        # if neither name or record_id exist, then exit with error
-        helpers.exit_with_error("Must include one of: record_id, record_name")
+        # if no matching name found, then exit with error
+        if record_id_count > 1:
+            helpers.exit_with_error("more than one record found for name and type, record_id must be provided")
+
     if record_id is None:
         # get record_id from environment variable
         record_id = os.environ['RECORD_ID']
+
+    if record_id is None:
+        # if record_id exist, then exit with error
+        helpers.exit_with_error("Must include (or able to retrieve): record_id")
 
     try:
         params = {'ttl': ttl,
