@@ -18,6 +18,7 @@ def record_update(hetzner_dns_token=None,
                   ttl=None,
                   zone_id=None,
                   zone_name=None,
+                  debug=0,
                   id_only=False):
     """
     Update a record.
@@ -87,6 +88,10 @@ def record_update(hetzner_dns_token=None,
         # get record name from environment variable
         name = os.environ['NAME']
 
+    if debug == 0 and os.environ.get('DEBUG'):
+        # get debug from environment variable
+        debug = int(os.environ['DEBUG'])
+
     # if zone_name exists, use it to obtain the zone_id
     if zone_name:
 
@@ -148,6 +153,10 @@ def record_update(hetzner_dns_token=None,
                   'name': name,
                   'zone_id': zone_id}
 
+        if debug > 0:
+            print("DEBUG : request: record_id=%s" % record_id, file=sys.stderr)
+            print(json.dumps(params), file=sys.stderr)
+
         response = requests.put(url='https://dns.hetzner.com/api/v1/records/' + record_id,
                                  headers={'Content-Type': 'application/json',
                                           'Auth-API-Token': hetzner_dns_token},
@@ -155,6 +164,9 @@ def record_update(hetzner_dns_token=None,
 
         decoded_response = response.content.decode('utf-8')
         response_dict = json.loads(decoded_response)
+        if debug > 0:
+            print("DEBUG : response:", file=sys.stderr)
+            print(json.dumps(response_dict), file=sys.stderr)
 
         # check response for errors
         helpers.check_response_for_errors(response_dict)
