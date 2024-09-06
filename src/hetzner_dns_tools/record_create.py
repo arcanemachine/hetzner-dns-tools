@@ -2,21 +2,24 @@
 
 import json
 import os
-import requests
 import sys
+
+import requests
 
 from . import hetzner_dns_helpers as helpers
 from .zone_list import zone_list
 
 
-def record_create(hetzner_dns_token=None,
-                  record_type=None,
-                  name=None,
-                  value=None,
-                  ttl=None,
-                  zone_id=None,
-                  zone_name=None,
-                  id_only=False):
+def record_create(
+    hetzner_dns_token=None,
+    record_type=None,
+    name=None,
+    value=None,
+    ttl=None,
+    zone_id=None,
+    zone_name=None,
+    id_only=False,
+):
     """
     Create a new record.
     https://dns.hetzner.com/api-docs/#operation/CreateRecord
@@ -47,99 +50,103 @@ def record_create(hetzner_dns_token=None,
       in ALL_CAPS.
         - e.g. zone_id in Python -> ZONE_ID in environment variable
     """
-    if os.environ.get('SHOW_HELP'):
+    if os.environ.get("SHOW_HELP"):
         # print the docstring and exit
         print(record_create.__doc__)
         sys.exit(0)
 
     if hetzner_dns_token is None:
         # get token from environment variable
-        hetzner_dns_token = os.environ['HETZNER_DNS_TOKEN']
+        hetzner_dns_token = os.environ["HETZNER_DNS_TOKEN"]
 
     if record_type is None:
         # get record_type from environment variable
-        record_type = os.environ['RECORD_TYPE']\
-            if os.environ.get('RECORD_TYPE') else os.environ['TYPE']
+        record_type = (
+            os.environ["RECORD_TYPE"]
+            if os.environ.get("RECORD_TYPE")
+            else os.environ["TYPE"]
+        )
 
     if name is None:
         # get name from environment variable
-        name = os.environ['NAME'] if os.environ.get('NAME') else '@'
+        name = os.environ["NAME"] if os.environ.get("NAME") else "@"
 
     if value is None:
         # get value from environment variable
-        value = os.environ['VALUE']
+        value = os.environ["VALUE"]
 
     if ttl is None:
-        if os.environ.get('TTL'):
+        if os.environ.get("TTL"):
             # get ttl from environment variable
-            ttl = int(os.environ['TTL'])
+            ttl = int(os.environ["TTL"])
         else:
             # use default value for TTL
             ttl = 86400
 
-    if zone_name is None and os.environ.get('ZONE_NAME'):
+    if zone_name is None and os.environ.get("ZONE_NAME"):
         # get ttl from environment variable
-        zone_name = os.environ['ZONE_NAME']
+        zone_name = os.environ["ZONE_NAME"]
 
     # if zone_name exists, use it to obtain the zone_id
     if zone_name:
 
         # get list of zones
-        response_dict = zone_list()
+        response_dict = zone_list(hetzner_dns_token=hetzner_dns_token)
 
         # check response for errors
         helpers.check_response_for_errors(response_dict)
 
         # check for matching zone
-        dns_zones = response_dict['zones']
+        dns_zones = response_dict["zones"]
         for zone in dns_zones:
-            if zone['name'] == zone_name:
-                zone_id = zone['id']
+            if zone["name"] == zone_name:
+                zone_id = zone["id"]
                 break
 
         # if no matching zone found, then exit with error
         if zone_id is None:
             helpers.exit_with_error("zone not found")
 
-    if not zone_name and not zone_id and not os.environ.get('ZONE_ID'):
+    if not zone_name and not zone_id and not os.environ.get("ZONE_ID"):
         # if neither zone_name or zone_id exist, then exit with error
         helpers.exit_with_error("Must include one of: zone_id, zone_name")
     if zone_id is None:
         # get zone_id from environment variable
-        zone_id = os.environ['ZONE_ID']
+        zone_id = os.environ["ZONE_ID"]
 
     try:
-        params = {'ttl': ttl,
-                  'type': record_type,
-                  'value': value,
-                  'zone_id': zone_id}
+        params = {"ttl": ttl, "type": record_type, "value": value, "zone_id": zone_id}
         if name:
-            params['name'] = name
+            params["name"] = name
 
-        response = requests.post(url='https://dns.hetzner.com/api/v1/records',
-                                 headers={'Content-Type': 'application/json',
-                                          'Auth-API-Token': hetzner_dns_token},
-                                 data=json.dumps(params))
+        response = requests.post(
+            url="https://dns.hetzner.com/api/v1/records",
+            headers={
+                "Content-Type": "application/json",
+                "Auth-API-Token": hetzner_dns_token,
+            },
+            data=json.dumps(params),
+        )
 
-        decoded_response = response.content.decode('utf-8')
+        decoded_response = response.content.decode("utf-8")
         response_dict = json.loads(decoded_response)
 
         # check response for errors
         helpers.check_response_for_errors(response_dict)
 
         # return the expected result
-        if id_only or os.environ.get('ID_ONLY') == '1':
+        if id_only or os.environ.get("ID_ONLY") == "1":
             # return the zone_id
-            result = response_dict['record']['id']
+            result = response_dict["record"]["id"]
 
-            if __name__ == '__main__':
+            if __name__ == "__main__":
                 print(result)
                 sys.exit(0)  # exit successfully
 
             return result
         else:
             # return all zone data
-            if __name__ == '__main__':
+            if __name__ == "__main__":
                 print(json.dumps(response_dict))
                 sys.exit(0)  # exit successfully
 
@@ -151,5 +158,5 @@ def record_create(hetzner_dns_token=None,
         helpers.handle_request_exception(err)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     record_create()
